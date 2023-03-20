@@ -98,10 +98,8 @@ from discord import app_commands
 from dotenv import load_dotenv
 load_dotenv()
 token = os.getenv('TOKEN')
-# TOKEN = "OTcyMTgwMDU1MDAwMjUyNDY2.GJAhkG.CLFEAkPCUPSkQIDyLLQMKAHhk0CcPAbSot9XQg"
 bot = interactions.Client(token)
 
-Aleksis007 = '6bocMayFv0MB1UlCRmAYbybEybkkD_-z6pN07btgxMLrVo8'
 GuildList = [903362470482165832, 662904062215323662]
 #----------------------------------------------------------------------------------------------------------------
 
