@@ -3,11 +3,11 @@ import psycopg2
 
 def name_from(table, research):
 # connection
-    conn = psycopg2.connect("dbname=cranaruge user=postgres password=root")
+    conn = psycopg2.connect("dbname=cranaruge user=postgres password=password port=1130")
 
 # request
     cursor = conn.cursor()
-    query_request = "SELECT * FROM "+table+" WHERE Name LiKE "+"'"+research+"%"+"'"
+    query_request = "SELECT * FROM "+table+" WHERE Name LiKE "+"'%"+research+"%"+"'"
     
     cursor.execute(query_request)
 
@@ -27,7 +27,7 @@ def name_from(table, research):
 
 def element_from(table, element):
 # connection
-    conn = psycopg2.connect("dbname=cranaruge user=postgres password=root")
+    conn = psycopg2.connect("dbname=cranaruge user=postgres password=password port=1130")
 
 # request
     cursor = conn.cursor()
@@ -43,20 +43,18 @@ def element_from(table, element):
 # close connection
     cursor.close()
     return res
-    
-    
 
 
 
 
 
-def affinite_from(table, element):
+def critical_from(table, element):
 # connection
-    conn = psycopg2.connect("dbname=cranaruge user=postgres password=root")
+    conn = psycopg2.connect("dbname=cranaruge user=postgres password=password port=1130")
 
 # request
     cursor = conn.cursor()
-    query_request = "SELECT * FROM "+table+" WHERE attributes LIKE '%"+element+"%"+"%'"
+    query_request = "SELECT name, rarity, attributes, slots, price, creation_mats, upgrade_mats FROM "+table+" WHERE attributes LIKE '%"+element+"%"+"%'"
     
 # excution
     cursor.execute(query_request)
@@ -76,10 +74,10 @@ def affinite_from(table, element):
 
 def materials_from(table, materials):
 # connection
-    conn = psycopg2.connect("dbname=cranaruge user=postgres password=root")
+    conn = psycopg2.connect("dbname=cranaruge user=postgres password=password port=1130")
 # request
     cursor = conn.cursor()
-    query_request = "SELECT * FROM "+table+" WHERE upgrade_mats LIKE '%"+materials+"%'"
+    query_request = "SELECT name, rarity, attributes, slots, price, creation_mats, upgrade_mats FROM "+table+" WHERE upgrade_mats LIKE '%"+materials+"%'"
 # excution
     cursor.execute(query_request)
 # result

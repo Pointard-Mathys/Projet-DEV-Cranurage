@@ -23,7 +23,7 @@ def sword_master(url, name_table):
         rows = table.find_all('tr')
 
 # Connect to the SQLite database
-        conn = psycopg2.connect("dbname=cranaruge user=postgres password=root")
+        conn = psycopg2.connect("dbname=cranaruge user=postgres password=password port=1130")
 
         # conn = mysql.connector.connect(host=host, user=user, password=password, database=database)
 
@@ -60,7 +60,7 @@ def sword_master(url, name_table):
         
         
 
-def artilleur(url, name_table):   
+def gunner(url, name_table):   
 # Send a GET request to the website
         response = requests.get(url)
 
@@ -72,7 +72,7 @@ def artilleur(url, name_table):
         rows = table.find_all('tr')
 
 # Connect to the SQLite database
-        conn = psycopg2.connect("dbname=cranaruge user=postgres password=root")
+        conn = psycopg2.connect("dbname=cranaruge user=postgres password=password port=1130")
         # conn = mysql.connector.connect(host=host, user=user, password=password, database=database)
 
 # Create the table in the database
@@ -121,7 +121,7 @@ def bows(url, name_table):
         rows = table.find_all('tr')
 
 # Connect to the SQLite database
-        conn = psycopg2.connect("dbname=cranaruge user=postgres password=root")
+        conn = psycopg2.connect("dbname=cranaruge user=postgres password=password port=1130")
 
 # Create the table in the database
         query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT, rarity TEXT, attack_attribute TEXT, charge_stage TEXT, coatings TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"

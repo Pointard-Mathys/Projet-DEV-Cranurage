@@ -100,9 +100,11 @@ import numpy as np
 import math
 from discord import Embed
 from discord.ext import commands
+from discord.ext.tasks import loop
 from discord import app_commands
 from dotenv import load_dotenv
 from pulp import *
+from Request_SQL import name_from, element_from, critical_from, materials_from
 # from scipy.optimize import linprog
 load_dotenv()
 token = os.getenv('TOKEN')
@@ -148,6 +150,71 @@ async def self(interation: discord.Interaction):
 @tree.command(name="mhfzzinstall", description="Guide d'installation de Monster Hunter Frontier Z Zenith.")
 async def self(interation: discord.Interaction):
     await interation.response.send_message("Lien de téléchargement des fichiers : https://drive.google.com/file/d/14WJcwhDAlr_8l_eZkarR6oKRHpQdi-Wy/view\n")
+
+@tree.command(name="mhfzzweapon", description="Obtenir des informations sur une arme.")
+async def self(interation: discord.Interaction):
+    result = name_from('tonfa', 'Enrapture Tonfa "Solo"')
+    embed=discord.Embed(title="weapon_type", description="Armes disponibles pour les paramètres sélectionnés :", color=0xff0000)
+    embed.set_author(name="HeroFactory#0311", url="https://discord.gg/f77VwBX5w7", icon_url="https://cdn.discordapp.com/attachments/662904063058509836/1097454406015914045/Elder_Fatalis_armor_.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/662904063058509836/1097474419795968010/Mini_Poogie_trop_cute.png")
+    embed.add_field(name="Nom de l'arme :", value=result[0][0], inline=True)
+    embed.add_field(name="Attaque :", value=result[0][2], inline=True)
+    embed.add_field(name="Élement :", value="weapon_element", inline=True)
+    embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+    # embed.add_field(name="​", value="​", inline=False)
+    # embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
+    # embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
+    # embed.add_field(name="Élement :", value="weapon_element", inline=True)
+    # embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+    # embed.add_field(name="​", value="​", inline=False)
+    # embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
+    # embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
+    # embed.add_field(name="Élement :", value="weapon_element", inline=True)
+    # embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+    # embed.add_field(name="​", value="​", inline=False)
+    # embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
+    # embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
+    # embed.add_field(name="Élement :", value="weapon_element", inline=True)
+    # embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+    # embed.add_field(name="​", value="​​", inline=False)
+    # embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
+    # embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
+    # embed.add_field(name="Élement :", value="weapon_element", inline=True)
+    # embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+
+    
+    # second_embed=discord.Embed(title="weapon_type", description="Armes disponibles pour les paramètres sélectionnés :", color=0xff0000)
+    # second_embed.set_author(name="HeroFactory#0311", url="https://discord.gg/f77VwBX5w7", icon_url="https://cdn.discordapp.com/attachments/662904063058509836/1097454406015914045/Elder_Fatalis_armor_.png")
+    # second_embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/662904063058509836/1097454114671186001/Mini_Poogie_trop_cute.ico")
+    # second_embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
+    # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
+    # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
+    # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+    # second_embed.add_field(name="​", value="​", inline=False)
+    # second_embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
+    # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
+    # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
+    # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+    # second_embed.add_field(name="​", value="​", inline=False)
+    # second_embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
+    # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
+    # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
+    # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+    # second_embed.add_field(name="​", value="​", inline=False)
+    # second_embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
+    # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
+    # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
+    # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+    # second_embed.add_field(name="​", value="​​", inline=False)
+    # second_embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
+    # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
+    # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
+    # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+    if len(result) > 10:
+        await interation.response.send_message("Il y a trop d'armes qui remplissent les critères de recherche. Rendez-vous sur "+
+        "https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/bukiF.htm et lancez une recherche sur la page de l'arme de votre choix (Ctrl + F).")
+    else:
+        await interation.response.send_message(embed=embed)
 
 # COMMANDES FOE
 
