@@ -46,7 +46,7 @@ sword_master("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/taik
 
 
 
-# artilleur("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/right.htm","Light_Bowgun")
+artilleur("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/right.htm","Light_Bowgun")
 # artilleur("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/right_g.htm#t8","Light_Bowgun")
 # artilleur("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/right_s.htm#t5","Light_Bowgun")
 
@@ -57,6 +57,6 @@ sword_master("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/taik
 
 
 
-# bows("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/yumi.htm", "Bows")
+bows("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/yumi.htm", "Bows")
 # bows("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/yumi_g.htm#t8", "Bows")
 # bows("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/yumi_s.htm#t5", "Bows")
