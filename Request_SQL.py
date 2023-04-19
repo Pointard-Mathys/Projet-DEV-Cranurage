@@ -7,7 +7,7 @@ def name_from(table, research):
 
 # request
     cursor = conn.cursor()
-    query_request = "SELECT * FROM "+table+" WHERE Name LiKE "+"'"+research+"%"+"'"
+    query_request = "SELECT * FROM "+table+" WHERE Name LiKE "+"'%"+research+"%"+"'"
     
     cursor.execute(query_request)
 
@@ -90,6 +90,6 @@ def materials_from(table, materials):
     return res
 
 
-name_from('tonfa', 'Giroa')
-element_from('dual_swords', 'Fire')
+# name_from('bows', 'Power')
+# element_from('dual_swords', 'Fire')
 

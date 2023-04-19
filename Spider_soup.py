@@ -28,28 +28,42 @@ def sword_master(url, name_table):
         # conn = mysql.connector.connect(host=host, user=user, password=password, database=database)
 
 # Create the table in the database
-        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT, rarity TEXT, attributes TEXT, sharpness TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
+        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,grade TEXT,rarity TEXT, attributes TEXT, sharpness TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
         cursor = conn.cursor()
         cursor.execute(query_create)
         
 # Insert the data into the table
+        # name =""
+        grade =[]
+        s = ""
         for row in rows:
                 cols = row.find_all('td')
                 if cols:
-                        name = cols[0].get_text().strip()
-                        rarity = cols[1].get_text().strip()
-                        attributes = cols[2].get_text().strip()
-                        sharpness = cols[3].get_text().strip()
-                        slots = cols[4].get_text().strip()
-                        rank = cols[5].get_text().strip()
-                        price = cols[6].get_text().strip()
-                        creation_mats = cols[7].get_text()
-                        upgrade_mats = cols[8].get_text()
-                        description = cols[9].text.strip()
+                        cells = row.find_all('div')
+                        for cell in cells:
+                            grade.append(cell.get_text().strip().lower()) in cell('a')
+                            for s in cell('a'):
+                                    if(s.find('←') != -1): 
+                                        s.extract()
+                                    
+                        #     test = cell
+                            i= len(grade)
+                            gradeF = grade[i-1]
 
+                            name = cols[0].get_text().lower()
+                            rarity = cols[1].get_text().strip().lower()
+                            attributes = cols[2].get_text().strip().lower()
+                            sharpness = cols[3].get_text().strip().lower()
+                            slots = cols[4].get_text().strip().lower()
+                            rank = cols[5].get_text().strip().lower()
+                            price = cols[6].get_text().strip().lower()
+                            creation_mats = cols[7].get_text().lower()
+                            upgrade_mats = cols[8].get_text().lower()
+                            description = cols[9].text.strip()
 # Insert the data into the database
-                        query_insert = """INSERT INTO """+name_table +""" (name,rarity, attributes, sharpness, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"""
-                        cursor.execute(query_insert, (name, rarity, attributes, sharpness, slots, rank, price, creation_mats, upgrade_mats, description))
+                        query_insert = """INSERT INTO """+name_table +""" (name,grade,rarity, attributes, sharpness, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"""
+                        cursor.execute(query_insert, (name,gradeF,rarity, attributes, sharpness, slots, rank, price, creation_mats, upgrade_mats, description))
+        print(grade)
 # Commit the changes and close the connection
         conn.commit()
         conn.close()
@@ -84,16 +98,16 @@ def artilleur(url, name_table):
         for row in rows:
                 cols = row.find_all('td')
                 if cols:
-                        name = cols[0].get_text().strip()
-                        rarity = cols[1].get_text().strip()
-                        attack = cols[2].get_text().strip()
-                        Reload_Recoil_Bullet_Speed = cols[3].get_text().strip()
-                        ammo = cols[4].get_text().strip()
-                        slots = cols[5].get_text().strip()
-                        rank = cols[6].get_text().strip()
-                        price = cols[7].get_text()
-                        creation_mats = cols[8].get_text()
-                        upgrade_mats = cols[9].text.strip()
+                        name = cols[0].get_text().strip().lower()
+                        rarity = cols[1].get_text().strip().lower()
+                        attack = cols[2].get_text().strip().lower()
+                        Reload_Recoil_Bullet_Speed = cols[3].get_text().strip().lower()
+                        ammo = cols[4].get_text().strip().lower()
+                        slots = cols[5].get_text().strip().lower()
+                        rank = cols[6].get_text().strip().lower()
+                        price = cols[7].get_text().lower()
+                        creation_mats = cols[8].get_text().lower()
+                        upgrade_mats = cols[9].text.strip().lower()
                         description = cols[10].text.strip()
 
 # Insert the data into the database
@@ -132,20 +146,21 @@ def bows(url, name_table):
         for row in rows:
                 cols = row.find_all('td')
                 if cols:
-                        name = cols[0].get_text().strip()
-                        rarity = cols[1].get_text().strip()
-                        attack_attribute = cols[2].get_text().strip()
-                        charge_stage = cols[3].get_text().strip()
-                        coatings = cols[4].get_text().strip()
-                        slots = cols[5].get_text().strip()
-                        rank = cols[6].get_text().strip()
-                        price = cols[7].get_text()
-                        creation_mats = cols[8].get_text()
-                        upgrade_mats = cols[9].text.strip()
+                        name = cols[0].get_text().strip().lower()
+                        rarity = cols[1].get_text().strip().lower()
+                        attack_attribute = cols[2].get_text().strip().lower()
+                        charge_stage = cols[3].get_text().strip().lower()
+                        coatings = cols[4].get_text().strip().lower()
+                        slots = cols[5].get_text().strip().lower()
+                        rank = cols[6].get_text().strip().lower()
+                        price = cols[7].get_text().lower()
+                        creation_mats = cols[8].get_text().lower()
+                        upgrade_mats = cols[9].text.strip().lower()
                         description = cols[10].text.strip()
+                        
 
 # Insert the data into the database
-                        query_insert = """INSERT INTO """+name_table +""" (name, rarity, attack_attribute, charge_stage , coatings, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s, %s, %s, %s, %s, %s,%s,%s,%s,%s)"""
+                        query_insert = """INSERT INTO """+name_table +"""(name, rarity, attack_attribute, charge_stage , coatings, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s, %s, %s, %s, %s, %s,%s,%s,%s,%s)"""
                         cursor.execute(query_insert, (name, rarity, attack_attribute,charge_stage, coatings,slots, rank, price, creation_mats, upgrade_mats, description))
 # Commit the changes and close the connection
         conn.commit()
