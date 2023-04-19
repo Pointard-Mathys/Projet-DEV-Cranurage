@@ -28,42 +28,47 @@ def sword_master(url, name_table):
         # conn = mysql.connector.connect(host=host, user=user, password=password, database=database)
 
 # Create the table in the database
-        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,grade TEXT,rarity TEXT, attributes TEXT, sharpness TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
+        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,Disgrade TEXT,Upgrade TEXT,rarity TEXT, attributes TEXT, sharpness TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
         cursor = conn.cursor()
         cursor.execute(query_create)
-        
-# Insert the data into the table
-        # name =""
-        grade =[]
-        s = ""
+
+# extrate data
         for row in rows:
+# find all "td" for all data
                 cols = row.find_all('td')
                 if cols:
-                        cells = row.find_all('div')
-                        for cell in cells:
-                            grade.append(cell.get_text().strip().lower()) in cell('a')
-                            for s in cell('a'):
-                                    if(s.find('←') != -1): 
-                                        s.extract()
-                                    
-                        #     test = cell
-                            i= len(grade)
-                            gradeF = grade[i-1]
-
-                            name = cols[0].get_text().lower()
-                            rarity = cols[1].get_text().strip().lower()
-                            attributes = cols[2].get_text().strip().lower()
-                            sharpness = cols[3].get_text().strip().lower()
-                            slots = cols[4].get_text().strip().lower()
-                            rank = cols[5].get_text().strip().lower()
-                            price = cols[6].get_text().strip().lower()
-                            creation_mats = cols[7].get_text().lower()
-                            upgrade_mats = cols[8].get_text().lower()
-                            description = cols[9].text.strip()
+# find all div for Upgarde and Disgrade
+                        divs = row.find_all('div')
+                        for div in divs:
+                                Disgrade =""
+                                Upgrade=""
+                                a_tags = div.find_all('a')
+                                if len(a_tags) ==1:
+                                   Upgrade=a_tags[0].get_text().lower()
+                                   Disgrade=None
+                                if len(a_tags) > 1:
+                                   Disgrade=a_tags[0].get_text().lower()
+                                   for a_tag in a_tags[1:]:
+                                           Upgrade += a_tag.get_text().lower()+"/"
+# delete balise "a" in all html
+                                for s in div('a'):
+                                        if(s.find('←') != -1): 
+                                                s.extract()
+                            
+# Insert the data into the table
+                                name = cols[0].get_text().lower()
+                                rarity = cols[1].get_text().strip().lower()
+                                attributes = cols[2].get_text().strip().lower()
+                                sharpness = cols[3].get_text().strip().lower()
+                                slots = cols[4].get_text().strip().lower()
+                                rank = cols[5].get_text().strip().lower()
+                                price = cols[6].get_text().strip().lower()
+                                creation_mats = cols[7].get_text().lower()
+                                upgrade_mats = cols[8].get_text().lower()
+                                description = cols[9].text.strip()
 # Insert the data into the database
-                        query_insert = """INSERT INTO """+name_table +""" (name,grade,rarity, attributes, sharpness, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"""
-                        cursor.execute(query_insert, (name,gradeF,rarity, attributes, sharpness, slots, rank, price, creation_mats, upgrade_mats, description))
-        print(grade)
+                        query_insert = """INSERT INTO """+name_table +""" (name,Disgrade,Upgrade,rarity, attributes, sharpness, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"""
+                        cursor.execute(query_insert, (name,Disgrade,Upgrade,rarity, attributes, sharpness, slots, rank, price, creation_mats, upgrade_mats, description))
 # Commit the changes and close the connection
         conn.commit()
         conn.close()
