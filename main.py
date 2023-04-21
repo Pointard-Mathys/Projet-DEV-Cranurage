@@ -1,0 +1,3 @@
+import cranaruge
+
+cranaruge.launch()
