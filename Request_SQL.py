@@ -90,6 +90,6 @@ def materials_from(table, materials):
     return res
 
 
-# name_from('bows', 'Power')
+name_from('bows', 'hunter bow iii')
 # element_from('dual_swords', 'Fire')
 

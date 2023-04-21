@@ -28,7 +28,7 @@ def sword_master(url, name_table):
         # conn = mysql.connector.connect(host=host, user=user, password=password, database=database)
 
 # Create the table in the database
-        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,disgrade TEXT,upgrade TEXT,rarity TEXT, attributes TEXT, sharpness TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
+        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,previousLevel TEXT,upgrade TEXT,rarity TEXT,attack TEXT, attributes TEXT,affinity TEXT, sharpness TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
         cursor = conn.cursor()
         cursor.execute(query_create)
 
@@ -58,7 +58,18 @@ def sword_master(url, name_table):
 # Insert the data into the table
                                 name = cols[0].get_text().lower()
                                 rarity = cols[1].get_text().strip().lower()
+                                
+                                
                                 attributes = cols[2].get_text().strip().lower()
+                                att_att= attributes.split(" ")[0]
+                                
+                                att_tab_aff= attributes.split(" ")
+                                att_tab2_aff= att_tab_aff[1].split("%")
+                                att_aff= att_tab2_aff[0]+"%"
+                                
+                                attribute = attributes.split("%")[1]
+                                                               
+                                print(attribute)                                
                                 sharpness = cols[3].get_text().strip().lower()
                                 slots = cols[4].get_text().strip().lower()
                                 rank = cols[5].get_text().strip().lower()
@@ -67,8 +78,8 @@ def sword_master(url, name_table):
                                 upgrade_mats = cols[8].get_text().lower()
                                 description = cols[9].text.strip()
 # Insert the data into the database
-                        query_insert = """INSERT INTO """+name_table +""" (name,disgrade,upgrade,rarity, attributes, sharpness, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"""
-                        cursor.execute(query_insert, (name,Disgrade,Upgrade,rarity, attributes, sharpness, slots, rank, price, creation_mats, upgrade_mats, description))
+                        query_insert = """INSERT INTO """+name_table +""" (name,disgrade,upgrade,rarity,attack, attributes,affinity, sharpness, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"""
+                        cursor.execute(query_insert, (name,Disgrade,Upgrade,rarity, att_att,attribute,att_aff, sharpness, slots, rank, price, creation_mats, upgrade_mats, description))
 # Commit the changes and close the connection
         conn.commit()
         conn.close()
