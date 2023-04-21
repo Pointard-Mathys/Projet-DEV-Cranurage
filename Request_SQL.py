@@ -88,6 +88,6 @@ def materials_from(table, materials):
     return res
 
 
-name_from('tonfa', 'Giroa')
-element_from('dual_swords', 'Fire')
+name_from('bows', 'hunter bow iii')
+# element_from('dual_swords', 'Fire')
 
