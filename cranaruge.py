@@ -1,91 +1,3 @@
-
-# from code import interact
-# from sys import prefix
-# import discord
-# import os
-# import random
-# from dotenv import load_dotenv
-# from discord.ext import *
-# # import typing
-# # from discord import Embed
-# from discord import *
-# # from discord_slash import SlashCommand
-
-# load_dotenv()
-# token = os.getenv('TOKEN')
-
-# bot = discord.interactions.Client(token)
-
-# intent = discord.Intents.default()
-# intent.members = True
-# intent.message_content = True
-
-# # tree = discord.app_commands.CommandTree(client)
-
-# poogie = "poogie"
-# poogie_emoji = "<:poogie:964488145041256508>"
-# #--------------------------------------------------------------
-# class abot(discord.Client):
-#     def __init__(self):
-#         super().__init__(intents=discord.Intents.default())
-#         self.synced = False
-
-#     async def on_ready(self):
-#         await tree.sync(guild=discord.Object(id=903362470482165832))
-#         self.synced = True
-#         print("Bot is online")
-
-# bot = abot()
-# tree = app_commands.CommandTree(bot)
-# bot.run()
-# #--------------------------------------------------------------
-# @client.event
-# async def on_message(message):
-#     username = str(message.author).split("#")[0]
-#     channel = str(message.channel.name)
-#     channel_id = message.channel.id
-#     user_message = message.content
-
-#     print(f'Message : \"{user_message}\" envoyé par {username} dans {channel}')
-
-#     if message.author == client.user:
-#         return
-
-#     if  poogie in user_message.lower():
-#         await message.add_reaction(poogie_emoji)
-#         return
-
-#     if channel_id == 903375076731285504:
-#         if user_message.lower() == "poogie" or user_message.lower() == "poogie !" or user_message.lower() == "poogie!":
-#             print("Poogie was sent")
-#             await message.channel.send(f'N\'oublie pas de prier Poogie quotidiennement {username} !')
-#             return
-#         elif user_message.lower() == "bye":
-#             await message.channel.send(f'Bye {username}')
-#         elif user_message.lower() == "tell me a joke":
-#             jokes = [" Can someone please shed more\
-#             light on how my lamp got stolen?",
-#                     "Why is she called llene? She\
-#                     stands on equal legs.",
-#                     "What do you call a gazelle in a \
-#                     lions territory? Denzel."]
-#             await message.channel.send(random.choice(jokes))
-
-# # client = commands.Bot(command_prefix="c!*")
-
-# # @client.command()
-# # async def ping(ctx):
-# #     await ctx.send('Pong')
-
-# client.run(token)
-# # def Launch():
-# #     bot.run(token)
-
-
-
-############################################################################################
-
-
 from dis import disco
 import os
 # from socket import send_fds
@@ -131,10 +43,6 @@ tree = app_commands.CommandTree(bot)
 
 #----------------------------------------------------------------------------------------------------------------
 
-@tree.command(name="opgg", description="get basic rank infos")
-async def self(interation: discord.Interaction,name:str , region: typing.Literal["EUW","EUNE","NA","BR","JP","KR","LA","LAS","OC","TR","RU"], queue: typing.Literal["SoloQ","FelxQ"]):
-    await interation.response.send_message("str à la con")
-
 # COMMANDES GLOBALES
 
 @tree.command(name="pang", description="Yes, Cranaruge is here.")
@@ -152,15 +60,84 @@ async def self(interation: discord.Interaction):
     await interation.response.send_message("Lien de téléchargement des fichiers : https://drive.google.com/file/d/14WJcwhDAlr_8l_eZkarR6oKRHpQdi-Wy/view\n")
 
 @tree.command(name="mhfzzweapon", description="Obtenir des informations sur une arme.")
-async def self(interation: discord.Interaction):
-    result = name_from('tonfa', 'Enrapture Tonfa "Solo"')
-    embed=discord.Embed(title="weapon_type", description="Armes disponibles pour les paramètres sélectionnés :", color=0xff0000)
+async def self(interation: discord.Interaction, type_d_arme: typing.Literal["Grande épée", "Épée longue", "Épée & Bouclier", "Lames doubles", "Marteau", "Lance", "Lancecanon", "Corne de chasse", "Morpho-hache", "Tonfas", "Magnet Spike", "Fusarbalète léger", "Fusarbalète lourd", "Arc"],
+nom: typing.Optional[str] = "", element: typing.Optional[typing.Literal["Feu", "Eau", "Foudre", "Glace", "Dragon", "Brasier", "Lumière", "Foudre magnétique", "Tenshou", "Séraphim Glacé", "Sou", "Flamme noire", "Ténèbre", "Démon rougeoyant", "Empereur céleste", "Burning Zero", "Vent", "Bruit", "Poison", "Paralysie", "Sommeil", "Explosion"]] = "",
+affinite: typing.Optional[int] = 0, materiaux: typing.Optional[str] = "", rarete: typing.Optional[typing.Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]] = 1,
+rang: typing.Optional[typing.Literal["Bas", "Haut", "Élite (RC5)", "Élite RC6)", "G"]] = "Tous"):
+    weapon_type = ""
+    match type_d_arme:
+        case "Grande épée":
+            weapon_type = "great_sword"
+        case "Épée longue":
+            weapon_type = "long_sword"
+        case "Épée & Bouclier":
+            weapon_type = "sword_and_shield"
+        case "Lames doubles":
+            weapon_type = "dual_swords"
+        case "Marteau":
+            weapon_type = "hammer"
+        case "Lance":
+            weapon_type = "lance"
+        case "Lancecanon":
+            weapon_type = "gunlance"
+        case "Corne de chasse":
+            weapon_type = "hunting_horn"
+        case "Morpho-hache":
+            weapon_type = "switch_axe"
+        case "Tonfas":
+            weapon_type = "tonfa"
+        case "Magnet Spike":
+            weapon_type = "magnet_spike"
+        case "Fusarbalète léger":
+            weapon_type = "light_bowgun"
+        case "Fusarbalète lourd":
+            weapon_type = "heavy_bowgun"
+        case "Arc":
+            weapon_type = "bow"
+    results = name_from(weapon_type, nom)
+    print(results)
+    if len(results) == 0:
+        await interation.response.send_message("Aucune arme ne correspond aux critères sélectionnés.")
+        return
+    embed=discord.Embed(title=type_d_arme, description="Armes disponibles pour les paramètres sélectionnés :", color=0xff0000)
     embed.set_author(name="HeroFactory#0311", url="https://discord.gg/f77VwBX5w7", icon_url="https://cdn.discordapp.com/attachments/662904063058509836/1097454406015914045/Elder_Fatalis_armor_.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/662904063058509836/1097474419795968010/Mini_Poogie_trop_cute.png")
-    embed.add_field(name="Nom de l'arme :", value=result[0][0], inline=True)
-    embed.add_field(name="Attaque :", value=result[0][2], inline=True)
-    embed.add_field(name="Élement :", value="weapon_element", inline=True)
-    embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+    if len(results) > 5:
+        tmp_res = results[0:5]
+        for weapon in tmp_res:
+            weapon_name = weapon[0]
+            weapon_rarity = weapon[1]
+            weapon_attributes = weapon[2]
+            weapon_sharpness = weapon[3]
+            weapon_slots = weapon[4]
+            weapon_rank = weapon[5]
+            weapon_mats = weapon[7]
+            embed.add_field(name="Nom de l'arme :", value=weapon_name, inline=True)
+            embed.add_field(name="Attaque :", value=weapon_attributes, inline=True)
+            embed.add_field(name="Élement :", value="weapon_element", inline=True)
+            embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+            embed.add_field(name="", value="", inline=True)
+            embed.add_field(name="", value="", inline=True)
+        await interation.response.send_message(f"Pas le bon résultat ? Réessayez en précisant davantage de critères, ou rendez-vous directement sur le site de Ferias : https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/bukiF.htm\n\n" +
+        f"5 résultats affichés sur {len(results)}", embed=embed)
+        return
+    else:
+        for weapon in results:
+            weapon_name = weapon[0]
+            weapon_rarity = weapon[1]
+            weapon_attributes = weapon[2]
+            weapon_sharpness = weapon[3]
+            weapon_slots = weapon[4]
+            weapon_rank = weapon[5]
+            weapon_mats = weapon[7]
+            embed.add_field(name="Nom de l'arme :", value=weapon_name, inline=True)
+            embed.add_field(name="Attaque :", value=weapon_attributes, inline=True)
+            embed.add_field(name="Élement :", value="weapon_element", inline=True)
+            embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+            embed.add_field(name="", value="", inline=True)
+            embed.add_field(name="", value="", inline=True)
+        await interation.response.send_message(f"Pas le bon résultat ? Réessayez avec d'autres critères !", embed=embed)
+        return
     # embed.add_field(name="​", value="​", inline=False)
     # embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
     # embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
@@ -210,7 +187,7 @@ async def self(interation: discord.Interaction):
     # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
     # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
     # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
-    if len(result) > 10:
+    if len(results) > 10:
         await interation.response.send_message("Il y a trop d'armes qui remplissent les critères de recherche. Rendez-vous sur "+
         "https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/bukiF.htm et lancez une recherche sur la page de l'arme de votre choix (Ctrl + F).")
     else:
