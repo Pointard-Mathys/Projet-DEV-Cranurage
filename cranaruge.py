@@ -16,7 +16,7 @@ from discord.ext.tasks import loop
 from discord import app_commands
 from dotenv import load_dotenv
 from pulp import *
-from Request_SQL import name_from, element_from, critical_from, materials_from
+from Request_SQL import name_from, global_search
 # from scipy.optimize import linprog
 load_dotenv()
 token = os.getenv('TOKEN')
@@ -61,9 +61,8 @@ async def self(interation: discord.Interaction):
 
 @tree.command(name="mhfzzweapon", description="Obtenir des informations sur une arme.")
 async def self(interation: discord.Interaction, type_d_arme: typing.Literal["Grande épée", "Épée longue", "Épée & Bouclier", "Lames doubles", "Marteau", "Lance", "Lancecanon", "Corne de chasse", "Morpho-hache", "Tonfas", "Magnet Spike", "Fusarbalète léger", "Fusarbalète lourd", "Arc"],
-nom: typing.Optional[str] = "", element: typing.Optional[typing.Literal["Feu", "Eau", "Foudre", "Glace", "Dragon", "Brasier", "Lumière", "Foudre magnétique", "Tenshou", "Séraphim Glacé", "Sou", "Flamme noire", "Ténèbre", "Démon rougeoyant", "Empereur céleste", "Burning Zero", "Vent", "Bruit", "Poison", "Paralysie", "Sommeil", "Explosion"]] = "",
-affinite: typing.Optional[int] = 0, materiaux: typing.Optional[str] = "", rarete: typing.Optional[typing.Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]] = 1,
-rang: typing.Optional[typing.Literal["Bas", "Haut", "Élite (RC5)", "Élite RC6)", "G"]] = "Tous"):
+element: typing.Optional[typing.Literal["Feu", "Eau", "Foudre", "Glace", "Dragon", "Brasier", "Lumière", "Foudre magnétique", "Tenshou", "Séraphim Glacé", "Sou", "Flamme noire", "Ténèbre", "Démon rougeoyant", "Empereur céleste", "Burning Zero", "Vent", "Bruit", "Poison", "Paralysie", "Sommeil", "Explosion"]] = "",
+affinite: typing.Optional[int] = 0, materiaux: typing.Optional[str] = "", rarete: typing.Optional[typing.Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]] = 0):
     weapon_type = ""
     match type_d_arme:
         case "Grande épée":
@@ -93,105 +92,193 @@ rang: typing.Optional[typing.Literal["Bas", "Haut", "Élite (RC5)", "Élite RC6)
         case "Fusarbalète lourd":
             weapon_type = "heavy_bowgun"
         case "Arc":
-            weapon_type = "bow"
-    results = name_from(weapon_type, nom)
+            weapon_type = "bows"
+
+    match element:
+        case "Feu":
+            element = "fire"
+        case "Eau":
+            element = "water"
+        case "Foudre":
+            element = "thunder"
+        case "Glace":
+            element = "ice"
+        case  "Dragon":
+            element = "dragon"
+        case "Brasier":
+            element = "blaze"
+        case "Lumière":
+            element = "light"
+        case "Foudre magnétique":
+            element = "thunder pole"
+        case "Flamme noire":
+            element = "black flame"
+        case "Ténèbre":
+            element = "darkness"
+        case "Démon rougeoyant":
+            element = "crimson demon"
+        case "Burning Zero":
+            element = "burning zero"
+        case "Vent":
+            element = "wind"
+        case "Bruit":
+            element = "sound"
+        case "Empereur céleste":
+            element = "emperor's roar"
+        case "Poison":
+            element = "poison"
+        case "Paralysie":
+            element = "para"
+        case "Sommeil":
+            element = "sleep"
+
+
+    results = global_search(table=weapon_type, element=element, affinity=affinite, materials=materiaux.lower(), rarity=rarete)
     print(results)
+    if results is None:
+        await interation.response.send_message("Aucune arme ne correspond aux critères sélectionnés.")
+        return
+    embed=discord.Embed(title=type_d_arme, description="Armes disponibles pour les paramètres sélectionnés :", color=0xff0000)
+    embed.set_author(name="HeroFactory#0311", url="https://discord.gg/f77VwBX5w7", icon_url="https://cdn.discordapp.com/attachments/662904063058509836/1097454406015914045/Elder_Fatalis_armor_.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/662904063058509836/1097474419795968010/Mini_Poogie_trop_cute.png")
+    if len(results) > 4:
+        tmp_res = results[0:4]
+        for weapon in tmp_res:
+            weapon_name = weapon[0]
+            weapon_attack = weapon[4]
+            weapon_attributes = weapon[5]
+            weapon_affinity = weapon[6]
+            embed.add_field(name="Nom :", value=weapon_name, inline=True)
+            embed.add_field(name="Attaque :", value=weapon_attack, inline=True)
+            embed.add_field(name="Élement :", value=weapon_attributes, inline=True)
+            embed.add_field(name="Affinité :", value=weapon_affinity, inline=True)
+            embed.add_field(name="", value="", inline=True)
+            embed.add_field(name="", value="", inline=True)
+        await interation.response.send_message(f"Pas le bon résultat ? Réessayez en précisant davantage de critères, ou rendez-vous directement sur le site de [Ferias](https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/bukiF.htm)\n\n" +
+        f"4 résultats affichés sur {len(results)}", embed=embed)
+        return
+    else:
+        for weapon in results:
+            weapon_name = weapon[0]
+            weapon_attack = weapon[4]
+            weapon_attributes = weapon[5]
+            weapon_affinity = weapon[6]
+            embed.add_field(name="Nom :", value=weapon_name, inline=True)
+            embed.add_field(name="Attaque :", value=weapon_attack, inline=True)
+            embed.add_field(name="Élement :", value=weapon_attributes, inline=True)
+            embed.add_field(name="Affinité :", value=weapon_affinity, inline=True)
+            embed.add_field(name="", value="", inline=True)
+            embed.add_field(name="", value="", inline=True)
+        await interation.response.send_message(f"Pas le bon résultat ? Réessayez avec d'autres critères !", embed=embed)
+        return
+
+@tree.command(name="mhfzzweaponname", description="Rechercher une arme en utilisant son nom")
+async def self(interation: discord.Interaction, type_d_arme: typing.Literal["Grande épée", "Épée longue", "Épée & Bouclier", "Lames doubles", "Marteau", "Lance", "Lancecanon", "Corne de chasse", "Morpho-hache", "Tonfas", "Magnet Spike", "Fusarbalète léger", "Fusarbalète lourd", "Arc"],
+nom: str):
+    weapon_type = ""
+    match type_d_arme:
+        case "Grande épée":
+            weapon_type = "great_sword"
+        case "Épée longue":
+            weapon_type = "long_sword"
+        case "Épée & Bouclier":
+            weapon_type = "sword_and_shield"
+        case "Lames doubles":
+            weapon_type = "dual_swords"
+        case "Marteau":
+            weapon_type = "hammer"
+        case "Lance":
+            weapon_type = "lance"
+        case "Lancecanon":
+            weapon_type = "gunlance"
+        case "Corne de chasse":
+            weapon_type = "hunting_horn"
+        case "Morpho-hache":
+            weapon_type = "switch_axe"
+        case "Tonfas":
+            weapon_type = "tonfa"
+        case "Magnet Spike":
+            weapon_type = "magnet_spike"
+        case "Fusarbalète léger":
+            weapon_type = "light_bowgun"
+        case "Fusarbalète lourd":
+            weapon_type = "heavy_bowgun"
+        case "Arc":
+            weapon_type = "bows"
+
+    results = name_from(weapon_type, nom.lower())
+
+    embed=discord.Embed(title=type_d_arme, description="Armes disponibles pour les paramètres sélectionnés :", color=0xff0000)
+    embed.set_author(name="HeroFactory#0311", url="https://discord.gg/f77VwBX5w7", icon_url="https://cdn.discordapp.com/attachments/662904063058509836/1097454406015914045/Elder_Fatalis_armor_.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/662904063058509836/1097474419795968010/Mini_Poogie_trop_cute.png")
     if len(results) == 0:
         await interation.response.send_message("Aucune arme ne correspond aux critères sélectionnés.")
         return
     embed=discord.Embed(title=type_d_arme, description="Armes disponibles pour les paramètres sélectionnés :", color=0xff0000)
     embed.set_author(name="HeroFactory#0311", url="https://discord.gg/f77VwBX5w7", icon_url="https://cdn.discordapp.com/attachments/662904063058509836/1097454406015914045/Elder_Fatalis_armor_.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/662904063058509836/1097474419795968010/Mini_Poogie_trop_cute.png")
-    if len(results) > 5:
-        tmp_res = results[0:5]
+    if len(results) > 4:
+        tmp_res = results[0:4]
         for weapon in tmp_res:
             weapon_name = weapon[0]
-            weapon_rarity = weapon[1]
-            weapon_attributes = weapon[2]
-            weapon_sharpness = weapon[3]
-            weapon_slots = weapon[4]
-            weapon_rank = weapon[5]
-            weapon_mats = weapon[7]
-            embed.add_field(name="Nom de l'arme :", value=weapon_name, inline=True)
-            embed.add_field(name="Attaque :", value=weapon_attributes, inline=True)
-            embed.add_field(name="Élement :", value="weapon_element", inline=True)
-            embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+            weapon_rarity = weapon[3]
+            weapon_attack = weapon[4]
+            weapon_attributes = weapon[5]
+            weapon_affinity = weapon[6]
+            weapon_slots = weapon[8]
+            weapon_rank = weapon[9]
+            embed.add_field(name="Nom :", value=weapon_name, inline=True)
+            embed.add_field(name="Attaque :", value=weapon_attack, inline=True)
+            embed.add_field(name="Élement :", value=weapon_attributes, inline=True)
+            embed.add_field(name="Affinité :", value=weapon_affinity, inline=True)
             embed.add_field(name="", value="", inline=True)
             embed.add_field(name="", value="", inline=True)
-        await interation.response.send_message(f"Pas le bon résultat ? Réessayez en précisant davantage de critères, ou rendez-vous directement sur le site de Ferias : https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/bukiF.htm\n\n" +
-        f"5 résultats affichés sur {len(results)}", embed=embed)
+        await interation.response.send_message(f"Pas le bon résultat ? Réessayez en précisant davantage de critères, ou rendez-vous directement sur le site de [Ferias](https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/bukiF.htm)\n\n" +
+        f"4 résultats affichés sur {len(results)}", embed=embed)
         return
-    else:
+    elif len(results) > 1:
         for weapon in results:
             weapon_name = weapon[0]
-            weapon_rarity = weapon[1]
-            weapon_attributes = weapon[2]
-            weapon_sharpness = weapon[3]
-            weapon_slots = weapon[4]
-            weapon_rank = weapon[5]
-            weapon_mats = weapon[7]
-            embed.add_field(name="Nom de l'arme :", value=weapon_name, inline=True)
-            embed.add_field(name="Attaque :", value=weapon_attributes, inline=True)
-            embed.add_field(name="Élement :", value="weapon_element", inline=True)
-            embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
+            weapon_rarity = weapon[3]
+            weapon_attack = weapon[4]
+            weapon_attributes = weapon[5]
+            weapon_affinity = weapon[6]
+            weapon_slots = weapon[8]
+            weapon_rank = weapon[9]
+            embed.add_field(name="Nom :", value=weapon_name, inline=True)
+            embed.add_field(name="Attaque :", value=weapon_attack, inline=True)
+            embed.add_field(name="Élement :", value=weapon_attributes, inline=True)
+            embed.add_field(name="Affinité :", value=weapon_affinity, inline=True)
             embed.add_field(name="", value="", inline=True)
             embed.add_field(name="", value="", inline=True)
         await interation.response.send_message(f"Pas le bon résultat ? Réessayez avec d'autres critères !", embed=embed)
         return
-    # embed.add_field(name="​", value="​", inline=False)
-    # embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
-    # embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
-    # embed.add_field(name="Élement :", value="weapon_element", inline=True)
-    # embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
-    # embed.add_field(name="​", value="​", inline=False)
-    # embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
-    # embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
-    # embed.add_field(name="Élement :", value="weapon_element", inline=True)
-    # embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
-    # embed.add_field(name="​", value="​", inline=False)
-    # embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
-    # embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
-    # embed.add_field(name="Élement :", value="weapon_element", inline=True)
-    # embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
-    # embed.add_field(name="​", value="​​", inline=False)
-    # embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
-    # embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
-    # embed.add_field(name="Élement :", value="weapon_element", inline=True)
-    # embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
-
-    
-    # second_embed=discord.Embed(title="weapon_type", description="Armes disponibles pour les paramètres sélectionnés :", color=0xff0000)
-    # second_embed.set_author(name="HeroFactory#0311", url="https://discord.gg/f77VwBX5w7", icon_url="https://cdn.discordapp.com/attachments/662904063058509836/1097454406015914045/Elder_Fatalis_armor_.png")
-    # second_embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/662904063058509836/1097454114671186001/Mini_Poogie_trop_cute.ico")
-    # second_embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
-    # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
-    # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
-    # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
-    # second_embed.add_field(name="​", value="​", inline=False)
-    # second_embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
-    # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
-    # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
-    # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
-    # second_embed.add_field(name="​", value="​", inline=False)
-    # second_embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
-    # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
-    # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
-    # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
-    # second_embed.add_field(name="​", value="​", inline=False)
-    # second_embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
-    # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
-    # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
-    # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
-    # second_embed.add_field(name="​", value="​​", inline=False)
-    # second_embed.add_field(name="Nom de l'arme :", value="weapon_name", inline=True)
-    # second_embed.add_field(name="Attaque :", value="weapon_attack", inline=True)
-    # second_embed.add_field(name="Élement :", value="weapon_element", inline=True)
-    # second_embed.add_field(name="Affinité :", value="weapon_affinity", inline=True)
-    if len(results) > 10:
-        await interation.response.send_message("Il y a trop d'armes qui remplissent les critères de recherche. Rendez-vous sur "+
-        "https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/bukiF.htm et lancez une recherche sur la page de l'arme de votre choix (Ctrl + F).")
     else:
+        for weapon in results:
+            weapon_name = weapon[0]
+            previous_level = weapon[1]
+            next_level = weapon[2]
+            weapon_rarity = weapon[3]
+            weapon_attack = weapon[4]
+            weapon_attributes = weapon[5]
+            weapon_affinity = weapon[6]
+            weapon_slots = weapon[8]
+            weapon_rank = weapon[9]
+            weapon_crea_mats = weapon[11]
+            weapon_up_mats = weapon[12]
+            embed.add_field(name="Nom de l'arme :", value=weapon_name, inline=True)
+            embed.add_field(name="Amélioration précédente :", value=previous_level, inline=True)
+            embed.add_field(name="Amélioration suivante :", value=next_level, inline=True)
+            embed.add_field(name="Attaque :", value=weapon_attack, inline=True)
+            embed.add_field(name="Élement :", value=weapon_attributes, inline=True)
+            embed.add_field(name="Affinité :", value=weapon_affinity, inline=True)
+            embed.add_field(name="Emplacements :", value=weapon_slots, inline=True)
+            embed.add_field(name="Rareté :", value=weapon_rarity, inline=True)
+            embed.add_field(name="Rang :", value=weapon_rank, inline=True)
+            embed.add_field(name="Matériaux de création", value=weapon_crea_mats, inline=True)
+            embed.add_field(name="Matériaux d'amélioration", value=weapon_up_mats, inline=True)
         await interation.response.send_message(embed=embed)
+        return
 
 # COMMANDES FOE
 

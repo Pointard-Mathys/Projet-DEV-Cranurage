@@ -23,12 +23,12 @@ def sword_master(url, name_table):
         rows = table.find_all('tr')
 
 # Connect to the SQLite database
-        conn = psycopg2.connect("dbname=cranaruge user=postgres password=password port=1130")
+        conn = psycopg2.connect("dbname=test_cranaruge user=postgres password=password port=1130")
 
         # conn = mysql.connector.connect(host=host, user=user, password=password, database=database)
 
 # Create the table in the database
-        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,previousLevel TEXT,upgrade TEXT,rarity TEXT,attack TEXT, attributes TEXT,affinity TEXT, sharpness TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
+        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,disgrade TEXT,upgrade TEXT,rarity TEXT,attack TEXT, attributes TEXT,affinity TEXT, sharpness TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
         cursor = conn.cursor()
         cursor.execute(query_create)
 
@@ -78,8 +78,8 @@ def sword_master(url, name_table):
                                 upgrade_mats = cols[8].get_text().lower()
                                 description = cols[9].text.strip()
 # Insert the data into the database
-                        query_insert = """INSERT INTO """+name_table +""" (name,disgrade,upgrade,rarity,attack, attributes,affinity, sharpness, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"""
-                        cursor.execute(query_insert, (name,Disgrade,Upgrade,rarity, att_att,attribute,att_aff, sharpness, slots, rank, price, creation_mats, upgrade_mats, description))
+                                query_insert = """INSERT INTO """+name_table +""" (name,disgrade,upgrade,rarity,attack, attributes,affinity, sharpness, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"""
+                                cursor.execute(query_insert, (name,Disgrade,Upgrade,rarity, att_att,attribute,att_aff, sharpness, slots, rank, price, creation_mats, upgrade_mats, description))
 # Commit the changes and close the connection
         conn.commit()
         conn.close()
@@ -102,11 +102,11 @@ def gunner(url, name_table):
         rows = table.find_all('tr')
 
 # Connect to the SQLite database
-        conn = psycopg2.connect("dbname=cranaruge user=postgres password=password port=1130")
+        conn = psycopg2.connect("dbname=test_cranaruge user=postgres password=password port=1130")
         # conn = mysql.connector.connect(host=host, user=user, password=password, database=database)
 
 # Create the table in the database
-        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,disgrade TEXT,upgrade TEXT, rarity TEXT, attack TEXT, Reload_Recoil_Bullet_Speed TEXT, ammo TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
+        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,previous_Level TEXT,upgrade TEXT, rarity TEXT, attack TEXT, attributes TEXT,affinity TEXT, Reload_Recoil_Bullet_Speed TEXT, ammo TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
         cursor = conn.cursor()
         cursor.execute(query_create)
         
@@ -135,7 +135,18 @@ def gunner(url, name_table):
 # Insert the data into the table                            
                                 name = cols[0].get_text().lower()
                                 rarity = cols[1].get_text().strip().lower()
-                                attack = cols[2].get_text().strip().lower()
+                                
+                                
+                                
+                                attributes = cols[2].get_text().strip().lower()
+                                att_att= attributes.split(" ")[0]
+                                
+                                att_tab_aff= attributes.split(" ")
+                                att_tab2_aff= att_tab_aff[1].split("%")
+                                att_aff= att_tab2_aff[0]+"%"
+                                
+                                attribute = attributes.split("%")[1]
+                                
                                 Reload_Recoil_Bullet_Speed = cols[3].get_text().strip().lower()
                                 ammo = cols[4].get_text().strip().lower()
                                 slots = cols[5].get_text().strip().lower()
@@ -146,8 +157,8 @@ def gunner(url, name_table):
                                 description = cols[10].text.strip()
 
 # Insert the data into the database
-                                query_insert = """INSERT INTO """+name_table +""" (name,disgrade,upgrade, rarity, attack , Reload_Recoil_Bullet_Speed , ammo, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s,%s,%s,%s,%s)"""
-                                cursor.execute(query_insert, (name,Disgrade,Upgrade, rarity, attack, Reload_Recoil_Bullet_Speed, ammo,slots, rank, price, creation_mats, upgrade_mats, description))
+                                query_insert = """INSERT INTO """+name_table +""" (name, previous_Level, upgrade, rarity, attack, attributes, affinity, Reload_Recoil_Bullet_Speed , ammo, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+                                cursor.execute(query_insert, (name,Disgrade,Upgrade, rarity, att_att,attribute,att_aff, Reload_Recoil_Bullet_Speed, ammo,slots, rank, price, creation_mats, upgrade_mats, description))
 # Commit the changes and close the connection
         conn.commit()
         conn.close()
@@ -170,10 +181,10 @@ def bows(url, name_table):
         rows = table.find_all('tr')
 
 # Connect to the SQLite database
-        conn = psycopg2.connect("dbname=cranaruge user=postgres password=password port=1130")
+        conn = psycopg2.connect("dbname=test_cranaruge user=postgres password=password port=1130")
 
 # Create the table in the database
-        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,disgrade TEXT,upgrade TEXT, rarity TEXT, attack_attribute TEXT, charge_stage TEXT, coatings TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
+        query_create = f"CREATE TABLE IF NOT EXISTS "+name_table+" (name TEXT,previous_Level TEXT,upgrade TEXT, rarity TEXT,attack TEXT, attributes TEXT,affinity TEXT, charge_stage TEXT, coatings TEXT, slots TEXT, rank TEXT, price TEXT, creation_mats TEXT, upgrade_mats TEXT, description TEXT)"
         cursor = conn.cursor()
         cursor.execute(query_create)
         
@@ -202,6 +213,21 @@ def bows(url, name_table):
 # Insert the data into the table                            
                                 name = cols[0].get_text().strip().lower()
                                 rarity = cols[1].get_text().strip().lower()
+                                
+                                name = cols[0].get_text().lower()
+                                rarity = cols[1].get_text().strip().lower()
+                                
+                                
+                                attributes = cols[2].get_text().strip().lower()
+                                att_att= attributes.split(" ")[0]
+                                
+                                att_tab_aff= attributes.split(" ")
+                                att_tab2_aff= att_tab_aff[1].split("%")
+                                att_aff= att_tab2_aff[0]+"%"
+                                
+                                attribute = attributes.split("%")[1]
+                                
+                                
                                 attack_attribute = cols[2].get_text().strip().lower()
                                 charge_stage = cols[3].get_text().strip().lower()
                                 coatings = cols[4].get_text().strip().lower()
@@ -214,8 +240,8 @@ def bows(url, name_table):
                         
 
 # Insert the data into the database
-                        query_insert = """INSERT INTO """+name_table +"""(name,disgrade,upgrade, rarity, attack_attribute, charge_stage , coatings, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s, %s, %s, %s, %s, %s,%s,%s,%s,%s,%s,%s)"""
-                        cursor.execute(query_insert, (name,Disgrade,Upgrade,  rarity, attack_attribute,charge_stage, coatings,slots, rank, price, creation_mats, upgrade_mats, description))
+                                query_insert = """INSERT INTO """+name_table +"""(name,previous_Level,upgrade, rarity, attack, attributes,affinity, charge_stage , coatings, slots, rank, price, creation_mats, upgrade_mats, description) VALUES (%s,%s, %s, %s, %s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+                                cursor.execute(query_insert, (name,Disgrade,Upgrade,  rarity,att_att,attribute,att_aff,charge_stage, coatings,slots, rank, price, creation_mats, upgrade_mats, description))
 # Commit the changes and close the connection
         conn.commit()
         conn.close()
