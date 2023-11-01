@@ -1,5 +1,9 @@
 from dis import disco
+from email import message
+from email.policy import default
+from http import client
 import os
+from pydoc import describe
 # from socket import send_fds
 from unittest import result
 from urllib import response
@@ -17,6 +21,10 @@ from discord import app_commands
 from dotenv import load_dotenv
 from pulp import *
 from Request_SQL import name_from, global_search
+import grepolis
+from num2words import num2words
+import usefullfunctions
+from itertools import product
 # from scipy.optimize import linprog
 load_dotenv()
 token = os.getenv('TOKEN')
@@ -49,17 +57,75 @@ tree = app_commands.CommandTree(bot)
 async def self(interation: discord.Interaction):
     await interation.response.send_message("Poogie pongs you.")
 
+@tree.command(name="poll", description="Make a simple Discord poll. Separate each option with a semicolon \";\".")
+@app_commands.describe(
+    options="The options you want to set in your poll. Separate each one with a semicolon \";\".",
+    title="Title of your poll.",
+    description="An explicative text to explain users what is your poll about.",
+    channel="Channel name where Cranaruge will send the poll. NOT FUNCTIONAL"
+)
+async def self(interation: discord.Interaction, options: str, title: typing.Optional[str] = "Poll", description: typing.Optional[str] = "This is a sample description", channel: typing.Optional[str] = ""):
+    if options.count(";") >= 1:
+        poll = usefullfunctions.createPoll(title, options, description)
+        await interation.response.send_message("Poll created.", ephemeral=True)
+        msg = await interation.channel.send(embed=poll)
+        for idx, _ in enumerate(options.split(";", 10)):
+            await msg.add_reaction(f'{idx}\N{COMBINING ENCLOSING KEYCAP}')
+        return
+    await interation.response.send_message("This poll has less than two options!")
+    return
+
 # COMMANDES MOGAPÉDIA
 
 @tree.command(name="mhfzzhelp", description="Aide pour l'utilisation des commandes liées à Monster Hunter Frontier Z Zenith.")
-async def self(interation: discord.Interaction):
-    await interation.response.send_message("En cours de construction !")
+async def self(interation: discord.Interaction, commande: typing.Literal["help", "install", "hr5guide", "weapon", "weaponname"]):
+    response = f"# Guide d'utilisation de la commande ``mhfzz{commande}``\n\n"
+
+    match commande:
+        case "help":
+            response += f"La commande ``/mhfzz{commande}`` permet d'obtenir un guide d'utilisation de toutes les commandes liées à Monster Hunter Frontier Z Zenith.\n"\
+                "### Liste des commandes disponibles :\n- ``/mhfzzhelp``\n- ``/mhfzzinstall``\n- ``/mhfzzhr5guide``\n- ``/mhfzzweapon``\n- ``/mhfzzweaponname``"
+        case "install":
+            response += f"Tapez ``/mhfzz{commande}`` pour obtenir un lien permettant d'installer Monster Hunter Frontier Z Zenith gratuitement !"
+        case "hr5guide":
+            response += f"Tapez ``/mhfzz{commande} pour obtenir un lien vers un guide des nouveautés du RC5 dans Frontier."
+        case "weapon":
+            response += f"Tapez ``/mhfzz{commande}`` pour rechercher une arme dans la base de données de Frontier. L'affichage des données des armes artilleur est en cours de construction.\n" \
+                "### Critères de recherche :\n- type_d_arme (**obligatoire**) : le type d'arme que vous recherchez. À choisir parmi une liste d'options.\n"\
+                    "- element (optionnel) : l'élément de l'arme que vous recherchez. Inclut aussi les éléments combinés et les statuts. À choisir parmi une liste d'options.\n"\
+                        "- affinite (optionnel) : la valeur de l'affinité que l'arme doit avoir. Attention : il s'agit d'une valeur exacte d'affinité, la recherche n'incluera pas de résultat ayant une affinité différente de la valeur saisie.\n"\
+                            "- materiaux (optionnel) : précisez un ou plusieurs matériaux de création / amélioration. Il est recommandé de se baser sur les noms des matéraiux dans le jeu, ne faites pas de traduction.\n"\
+                                "- rarete (optionnel) : la rareté de l'arme que vous recherchez. Attention : n'inclut que la rareté exacte sélectionnée, ignore toutes les autres. Cette option permet notamment d'affiner la recherche en fonction de votre RC."
+        case "weaponname":
+            response += f"Tapez ``/mhfzz{commande} pour rechercher une arme en utilisant son nom, ou une partie de son nom. L'affichage des données des armes artilleur est en cours de construction.\n"\
+                "### Critères de recherche :\n- type_d_arme (**obligatoire**) : le type d'arme que vous recherchez.\n"\
+                    "- nom (**obligatoire**) : le nom ou une partie du nom de l'arme que vous recherchez."
+        case _:
+            response += "Cette commande n'existe pas !"
+
+    await interation.response.send_message(response)
 
 @tree.command(name="mhfzzinstall", description="Guide d'installation de Monster Hunter Frontier Z Zenith.")
 async def self(interation: discord.Interaction):
-    await interation.response.send_message("Lien de téléchargement des fichiers : https://drive.google.com/file/d/14WJcwhDAlr_8l_eZkarR6oKRHpQdi-Wy/view\n")
+    await interation.response.send_message("Cliquez [ici](https://drive.google.com/drive/folders/1Kqc755YcnirjaHB3uhCugcLvYugArHGS) pour télécharger les fichiers MHFZZ !")
+
+@tree.command(name="mhfzzhr5guide", description="Guide pour chasseurs arrivés au RC5.")
+async def self(interation: discord.Interaction):
+    await interation.response.send_message("[Ce document](https://docs.google.com/document/d/1HF-Y5eNk3Zbzk6PY7G8KiPJhMYQHSbgw) explique les nouveautés qui arrivent à partir du RC5, et comment passer outre le pic de difficulté imposé par le jeu.\n"\
+        "### Guide épéiste uniquement.")
+
+# @tree.command(name="mhfzzsetup", description="Guide pour les joueurs ayant déjà installé le jeu sans passer par la Mogapédia.")
+# async def self(interation: discord.Interaction):
+#     await interation.response.send_message("Si vous avez déjà installé Monster Hunter Frontier Z Zenith sans passer par la Mogapédia, suivez les instructions suivantes :\n\n")
 
 @tree.command(name="mhfzzweapon", description="Obtenir des informations sur une arme.")
+@app_commands.describe(
+    type_d_arme="Le type d'arme à rechercher.",
+    element="L'attribut que l'arme doit avoir. Inclut aussi les statuts et éléments combinés. Optionnel.",
+    affinite="L'affinité de l'arme. Optionnel.",
+    materiaux="Un ou plusieurs matériaux nécessaire à la réalisation de l'arme. Référez-vous aux noms dans le jeu. Optionnel.",
+    rarete="La rareté de l'arme recherchée. Optionnel."
+)
 async def self(interation: discord.Interaction, type_d_arme: typing.Literal["Grande épée", "Épée longue", "Épée & Bouclier", "Lames doubles", "Marteau", "Lance", "Lancecanon", "Corne de chasse", "Morpho-hache", "Tonfas", "Magnet Spike", "Fusarbalète léger", "Fusarbalète lourd", "Arc"],
 element: typing.Optional[typing.Literal["Feu", "Eau", "Foudre", "Glace", "Dragon", "Brasier", "Lumière", "Foudre magnétique", "Tenshou", "Séraphim Glacé", "Sou", "Flamme noire", "Ténèbre", "Démon rougeoyant", "Empereur céleste", "Burning Zero", "Vent", "Bruit", "Poison", "Paralysie", "Sommeil", "Explosion"]] = "",
 affinite: typing.Optional[int] = 0, materiaux: typing.Optional[str] = "", rarete: typing.Optional[typing.Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]] = 0):
@@ -135,7 +201,7 @@ affinite: typing.Optional[int] = 0, materiaux: typing.Optional[str] = "", rarete
 
     results = global_search(table=weapon_type, element=element, affinity=affinite, materials=materiaux.lower(), rarity=rarete)
     print(results)
-    if results is None:
+    if len(results) == 0:
         await interation.response.send_message("Aucune arme ne correspond aux critères sélectionnés.")
         return
     embed=discord.Embed(title=type_d_arme, description="Armes disponibles pour les paramètres sélectionnés :", color=0xff0000)
@@ -148,7 +214,7 @@ affinite: typing.Optional[int] = 0, materiaux: typing.Optional[str] = "", rarete
             weapon_attack = weapon[4]
             weapon_attributes = weapon[5]
             weapon_affinity = weapon[6]
-            embed.add_field(name="Nom :", value=weapon_name, inline=True)
+            embed.add_field(name="__Nom__ :", value=weapon_name, inline=True)
             embed.add_field(name="Attaque :", value=weapon_attack, inline=True)
             embed.add_field(name="Élement :", value=weapon_attributes, inline=True)
             embed.add_field(name="Affinité :", value=weapon_affinity, inline=True)
@@ -227,7 +293,7 @@ nom: str):
             weapon_affinity = weapon[6]
             weapon_slots = weapon[8]
             weapon_rank = weapon[9]
-            embed.add_field(name="Nom :", value=weapon_name, inline=True)
+            embed.add_field(name="__Nom__ :", value=weapon_name, inline=True)
             embed.add_field(name="Attaque :", value=weapon_attack, inline=True)
             embed.add_field(name="Élement :", value=weapon_attributes, inline=True)
             embed.add_field(name="Affinité :", value=weapon_affinity, inline=True)
@@ -245,7 +311,7 @@ nom: str):
             weapon_affinity = weapon[6]
             weapon_slots = weapon[8]
             weapon_rank = weapon[9]
-            embed.add_field(name="Nom :", value=weapon_name, inline=True)
+            embed.add_field(name="__Nom__ :", value=weapon_name, inline=True)
             embed.add_field(name="Attaque :", value=weapon_attack, inline=True)
             embed.add_field(name="Élement :", value=weapon_attributes, inline=True)
             embed.add_field(name="Affinité :", value=weapon_affinity, inline=True)
@@ -266,7 +332,7 @@ nom: str):
             weapon_rank = weapon[9]
             weapon_crea_mats = weapon[11]
             weapon_up_mats = weapon[12]
-            embed.add_field(name="Nom de l'arme :", value=weapon_name, inline=True)
+            embed.add_field(name="__Nom de l'arme__ :", value=weapon_name, inline=True)
             embed.add_field(name="Amélioration précédente :", value=previous_level, inline=True)
             embed.add_field(name="Amélioration suivante :", value=next_level, inline=True)
             embed.add_field(name="Attaque :", value=weapon_attack, inline=True)
@@ -378,190 +444,119 @@ async def self(interation: discord.Interaction, terme_recherché: str):
             tmp += "_"
         else:
             tmp += terme_recherché[i]
-    await interation.response.send_message("https://wiki.fr.grepolis.com/wiki/" + tmp)
+    link = "https://wiki.fr.grepolis.com/wiki/" + tmp
+    await interation.response.send_message(f"Page du wiki pour [{terme_recherché}]({link}).")
 
-# @tree.command(name="grepodefensecalculator", description="Retourne la meilleure défense possible pour un montant de population donné.")
-# async def self(interation: discord.Interaction, population: int):
-#     if population < 5000:
-#         # Units' statistics
-#         hoplite_stats = [18, 12, 7]
-#         swordsman_stats = [14, 8, 30]
-#         bowman_stats = [7, 25, 13]
+@tree.command(name="grepodefensecalculator", description="Retourne la meilleure défense possible pour un montant de population donné.")
+async def self(interation: discord.Interaction, population: int):
+    if population < 4500:
 
-#         # Define the problem as a minimization problem
-#         prob = LpProblem("Most Balanced Defense", LpMinimize)
+        response_str = f"Avec {population} habitants, une DT équilibrée s'organise comme suit :\n\n"
 
-#         # Define the decision variables
-#         x1 = LpVariable("x1", 0, None, LpInteger)
-#         x2 = LpVariable("x2", 0, None, LpInteger)
-#         x3 = LpVariable("x3", 0, None, LpInteger)
-
-#         # Define the objective function
-#         prob += lpSum([hoplite_stats[i]*x1 + swordsman_stats[i]*x2 + bowman_stats[i]*x3 for i in range(3)])
-
-#         # Define the constraints
-#         prob += x1 + x2 + x3 == population
-#         prob += hoplite_stats[0]*x1 + swordsman_stats[0]*x2 + bowman_stats[0]*x3 >= 0.33*lpSum([hoplite_stats[i]*x1 + swordsman_stats[i]*x2 + bowman_stats[i]*x3 for i in range(3)])
-#         prob += hoplite_stats[1]*x1 + swordsman_stats[1]*x2 + bowman_stats[1]*x3 >= 0.33*lpSum([hoplite_stats[i]*x1 + swordsman_stats[i]*x2 + bowman_stats[i]*x3 for i in range(3)])
-#         prob += hoplite_stats[2]*x1 + swordsman_stats[2]*x2 + bowman_stats[2]*x3 >= 0.33*lpSum([hoplite_stats[i]*x1 + swordsman_stats[i]*x2 + bowman_stats[i]*x3 for i in range(3)])
-
-#         # Solve the problem
-#         prob.solve()
-
-#         # Check if the problem has an optimal solution
-#         if LpStatus[prob.status] != "Optimal":
-#             await interation.response.send_message("Il y a trop peu de population pour pouvoir faire un véritable équilibrage.")
-#             return
-
-#         # Convert the decision variables to integers and return their values
-#         x1_value = int(x1.value())
-#         x2_value = int(x2.value())
-#         x3_value = int(x3.value())
-
-#         await interation.response.send_message(f"La composition défensive la plus optimisée avec {population} habitants est la suivante :\n\n"+
-#         f"{x1_value} Hoplites\n{x2_value} CE\n{x3_value} Archers\n\nPour le total défensif suivant :\n" +
-#         f"{hoplite_stats[0] * x1_value + swordsman_stats[0] * x2_value + bowman_stats[0] * x3_value}\n" +
-#         f"{hoplite_stats[1] * x1_value + swordsman_stats[1] * x2_value + bowman_stats[1] * x3_value}\n" +
-#         f"{hoplite_stats[2] * x1_value + swordsman_stats[2] * x2_value + bowman_stats[2] * x3_value}\n")
-
-#     else:
-#         await interation.response.send_message(f"Une ville ne peut pas avoir {population} habitants !")
-
-
-@tree.command(name="grepooffcalculator", description="Retourne le nombre de troupes faisables pour un montant de BFx, de Catas et de population donné.")
-async def self(interation: discord.Interaction, population_totale: int, nombre_de_catapultes: int, nombre_de_bfx: int):
-    start_pop = population_totale
-    if population_totale < 5000:
-
-        pop_cata = nombre_de_catapultes * 15
-        population_totale -= 10 * nombre_de_bfx
-        population_totale -= pop_cata
-        pop_btr = population_totale -5
-        pop_bt = population_totale -7
-        pop_same_island = population_totale
-
-        if population_totale <= 0:
-            await interation.response.send_message("Il y a trop de catapultes ou de BFx par rapport à la population donnée !")
-            return
-
-        btr_count = 1
-        bt_count = 1
-
-        btr_unit_count = 0
-        bt_unit_count = 0
-        unit_count = 0
-
+        btr_pop = 5
         btr_capacity = 16
+        btr_count = 0
+        btr_transportable_pop = 0
+
+        if grepolis.can_fit_in_bt(population, btr_pop, btr_capacity, 0):
+            btr_count += grepolis.bt_count_calculator(population, btr_pop, btr_capacity, 0)[0]
+            remaining_pop = grepolis.bt_count_calculator(population, btr_pop, btr_capacity, 0)[1]
+            print("btr count :", btr_count)
+            print("btr pop :", btr_pop)
+            print("btr remaining pop :", remaining_pop)
+            print("population :", population)
+            btr_transportable_pop += population - btr_count * btr_pop - remaining_pop
+            print("btr trans pop :", btr_transportable_pop)
+            response_str += f"{math.floor(btr_transportable_pop / 2)} Hoplites, {math.floor(btr_transportable_pop / 4)} Archers et {math.floor(btr_transportable_pop / 4)} CE transportés par {btr_count} BTR.\n" + \
+            f"Les valeurs défensives sont :\n{math.floor(btr_transportable_pop / 2) * 18 + math.floor(btr_transportable_pop / 4) * 7 + math.floor(btr_transportable_pop / 4) * 14}\n" + \
+                f"{math.floor(btr_transportable_pop / 2) * 12 + math.floor(btr_transportable_pop / 4) * 25 + math.floor(btr_transportable_pop / 4) * 8}\n" + \
+                    f"{math.floor(btr_transportable_pop / 2) * 7 + math.floor(btr_transportable_pop / 4) * 13 + math.floor(btr_transportable_pop / 4) * 30}\n\n"
+
+        bt_pop = 7
         bt_capacity = 32
+        bt_count = 0
+        bt_transportable_pop = 0
 
-        btr_message = ""
-        bt_message = ""
+        if grepolis.can_fit_in_bt(population, bt_pop, bt_capacity, 0):
+            bt_count += grepolis.bt_count_calculator(population, bt_pop, bt_capacity, 0)[0]
+            remaining_pop = grepolis.bt_count_calculator(population, bt_pop, bt_capacity, 0)[1]
+            bt_transportable_pop += population - bt_count * bt_pop - remaining_pop
+            response_str += f"{math.floor(bt_transportable_pop / 2)} Hoplites, {math.floor(bt_transportable_pop / 4)} Archers et {math.floor(bt_transportable_pop / 4)} CE transportés par {bt_count} BT.\n" + \
+            f"Les valeurs défensives sont :\n{math.floor(bt_transportable_pop / 2) * 18 + math.floor(bt_transportable_pop / 4) * 7 + math.floor(bt_transportable_pop / 4) * 14}\n" + \
+                f"{math.floor(bt_transportable_pop / 2) * 12 + math.floor(bt_transportable_pop / 4) * 25 + math.floor(bt_transportable_pop / 4) * 8}\n" + \
+                    f"{math.floor(bt_transportable_pop / 2) * 7 + math.floor(bt_transportable_pop / 4) * 13 + math.floor(bt_transportable_pop / 4) * 30}\n\n"
 
-        btr_count += math.ceil(pop_cata / 16)
-        if btr_count * 5 > population_totale:
-            btr_message += f"Il y a trop de catapultes pour transporter ce montant de population en BTR avec {nombre_de_bfx} BFx."
-        else:
-            btr_capacity += 16 - pop_cata % 16
-            btr_unit_count += pop_cata
-        print("BTR capacity : ", btr_capacity)
-        print("BTR unity count : ", btr_unit_count)
-        print("Première pop BTR  :", pop_btr)
+        await interation.response.send_message(response_str)
 
-        bt_count += math.ceil(pop_cata / 32)
-        if bt_count * 7 > population_totale:
-            bt_message += f"Il y a trop de catapultes pour transporter ce montant de population en BT avec {nombre_de_bfx} BFx."
-        else:
-            bt_capacity += 32 - pop_cata % 32
-            bt_unit_count += pop_cata
-
-        while pop_btr > 0:
-            if btr_capacity > 0:
-                pop_btr -= 1
-                btr_capacity -= 1
-                btr_unit_count += 1
-            if btr_capacity == 0 and pop_btr >= 5:
-                pop_btr -= 5
-                btr_count += 1
-                btr_capacity = 16
-            elif btr_capacity == 0:
-                pop_btr = 0
-            if pop_btr <= 5:
-                pop_btr = 0
-            print("Pop BTR :", pop_btr)
-            print("BTR units count :", btr_unit_count)
-            print("BTR count :", btr_count)
-            print("Total pop : ", btr_unit_count + btr_count * 5)
-
-        while pop_bt > 0:
-            if bt_capacity > 0:
-                pop_bt -= 1
-                bt_capacity -= 1
-                bt_unit_count += 1
-            if bt_capacity == 0 and pop_bt >= 7:
-                pop_bt -= 7
-                bt_count += 1
-                bt_capacity = 32
-            elif bt_capacity == 0:
-                pop_bt = 0
-            if pop_bt <= 7:
-                pop_bt = 0
-            print("Pop BT :", pop_bt)
-            print("BT units count :", bt_unit_count)
-
-        # while pop_btr > 0:
-        #     pop_btr -= 1
-        #     btr_unit_count += 1
-        #     if pop_btr - 5 < 0:
-        #         pop_btr = 0
-        #     elif btr_unit_count % 16 == 0 and pop_btr - 5 >= 0:
-        #         pop_btr -= 5
-        #         btr_count += 1
-        #         btr_capacity = btr_count * 16
-
-        # while pop_bt > 0:
-        #     pop_bt -= 1
-        #     bt_unit_count += 1
-        #     if pop_bt - 7 < 0:
-        #         pop_bt = 0
-        #     elif bt_unit_count % 32 == 0 and pop_bt - 7 >= 0:
-        #         pop_bt -= 7
-        #         bt_count += 1
-        #         bt_capacity = bt_count * 32
-
-        btr_unit_count -= pop_cata
-        bt_unit_count -= pop_cata
-        print("Last BTR unit count :", btr_unit_count)
-
-        while pop_same_island > 0:
-            pop_same_island -= 1
-            unit_count += 1
-
-        # if btr_capacity < btr_unit_count:
-        #     return
-
-        # if bt_capacity < bt_unit_count:
-        #     return
-
-        # if btr_unit_count < 0:
-        #     btr_message += f"Il y a trop de catapultes pour transporter ce montant de population en BTR avec {nombre_de_bfx} BFx."
-        if pop_btr == 0:
-            btr_message = f"- En BTR :\n{btr_unit_count} Fr / Hop ou {math.floor(btr_unit_count / 3)} Cavas, transportés par {btr_count} BTR avec {nombre_de_bfx} BFx."+ \
-            f"\nAvec les Fr / Hop, il restera {start_pop - (btr_unit_count + 5 * btr_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville."+\
-                f"\nAvec les Cavas, il restera {start_pop - (btr_unit_count - btr_unit_count % 3 + 5 * btr_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville."
-
-        # if bt_unit_count < 0:
-        #     bt_message += f"Il y a trop de catapultes pour transporter ce montant de population en BT avec {nombre_de_bfx} BFx."
-        if pop_bt == 0:
-            bt_message = f"- En BT :\n{bt_unit_count} Fr / Hop ou {math.floor(bt_unit_count / 3)} Cavas, transportés par {bt_count} BT avec {nombre_de_bfx} BFx."+ \
-            f"\nAvec les Fr / Hop, il restera {start_pop - (bt_unit_count + 7 * bt_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville." +\
-                f"\nAvec les Cavas, il restera {start_pop - (bt_unit_count - bt_unit_count % 3 + 7 * bt_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville."
-
-        await interation.response.send_message(f"Avec {start_pop} habitants, {nombre_de_bfx} BFx et {nombre_de_catapultes} Catas, une OT sera composée de :\n\n"+
-        f"- Sur la même île :\n{unit_count} Fr / Hop ou {math.floor(unit_count / 3)} Cavas (dans ce cas, il restera {unit_count % 3} habitants dans la ville)." +
-        f"\n\n{btr_message}\n\n{bt_message}")
-        return
     else:
-        await interation.response.send_message(f"Une ville ne peut pas avoir {population_totale} habitants !")
+        await interation.response.send_message(f"Une ville ne peut pas avoir {population} habitants !")
+
+
+@tree.command(name="grepooffcalculator", description="Retourne le nombre de troupes faisables pour des montants de BFx, de Catas et de population donnés.")
+async def self(interation: discord.Interaction, population_totale: int, nombre_de_bfx: typing.Optional[int] = 0, nombre_de_catas: typing.Optional[int] = 0, nombre_de_sirenes: typing.Optional[int] = 0):
+    if population_totale > 4500:
+        await interation.response.send_message(f"Une ville ne peut pas contenir {population_totale} habitants !")
+        return
+
+    pop_cata = nombre_de_catas * 15
+    pop_bfx = nombre_de_bfx * 10
+    pop_sirenes = nombre_de_sirenes * 16
+
+    if population_totale - pop_bfx - pop_cata - pop_sirenes < 0:
+        await interation.response.send_message("Il y a trop de catapultes, de BFx ou de sirènes pour la population sélectionnée.")
+        return
+
+    response_str = f"Avec {population_totale} habitants, {nombre_de_catas} catapultes, {nombre_de_bfx} BFx et {nombre_de_sirenes} sirènes, une OT sera composée de :\n\n"
+    available_pop = population_totale - pop_bfx - pop_sirenes
+
+    btr_pop = 5
+    btr_capacity = 16
+    btr_count = 0
+    btr_transportable_pop = 0
+
+
+    if grepolis.can_fit_in_bt(available_pop, btr_pop, btr_capacity, pop_cata):
+        btr_count += grepolis.bt_count_calculator(available_pop, btr_pop, btr_capacity, pop_cata)[0]
+        remaining_pop = grepolis.bt_count_calculator(available_pop, btr_pop, btr_capacity, pop_cata)[1]
+        btr_transportable_pop += available_pop - pop_cata - btr_count * btr_pop - remaining_pop
+        response_str += f"{btr_transportable_pop} Frondeurs / {math.floor(btr_transportable_pop / 3)} Cavas, {nombre_de_catas} catapultes transportés par {btr_count} BTR et accompagnés par {nombre_de_bfx} BFx et {nombre_de_sirenes} sirènes.\n\n"
+
+    bt_pop = 7
+    bt_capacity = 32
+    bt_count = 0
+    bt_transportable_pop = 0
+
+    if grepolis.can_fit_in_bt(available_pop, bt_pop, bt_capacity, pop_cata):
+        bt_count += grepolis.bt_count_calculator(available_pop, bt_pop, bt_capacity, pop_cata)[0]
+        remaining_pop = grepolis.bt_count_calculator(available_pop, bt_pop, bt_capacity, pop_cata)[1]
+        bt_transportable_pop += available_pop - pop_cata - bt_count * bt_pop - remaining_pop
+        response_str += f"{bt_transportable_pop} Frondeurs / {math.floor(bt_transportable_pop / 3)} Cavas, {nombre_de_catas} catapultes transportés par {bt_count} BT et accompagnés par {nombre_de_bfx} BFx et {nombre_de_sirenes} sirènes.\n\n"
+
+    if nombre_de_bfx == 0 and nombre_de_sirenes == 0:
+        pop_off = population_totale - pop_cata
+        response_str += f"{pop_off} Frondeurs / {math.floor(pop_off / 3)} Cavas et {nombre_de_catas} catapultes sur la même île."
+
+    await interation.response.send_message(response_str)
+
+@tree.command(name="grepocounttroupes", description="Obtenir un récapitulatif du nombre de troupes de l'ally.")
+async def self(interation: discord.Interaction, troupes: typing.Literal["BFx", "BB", "DT"]):
+    units_channel = ""
+    count = 0
+
+    channels = interation.guild.channels
+
+    for channel in channels:
+        if channel.name == f"compte-{troupes.lower()}":
+            units_channel = channel
+            break
+
+    if units_channel != "":
+        async for message in units_channel.history(limit=200):
+            count += grepolis.getIntFromStr(message.content)
+        await interation.response.send_message(f"L'ally dispose actuellement de {count} {troupes} !")
+        return
+
+    await interation.response.send_message(f"Il n'y a pas de salon appelé ``compte-{troupes.lower()}`` sur ce serveur !")
 
 
 
