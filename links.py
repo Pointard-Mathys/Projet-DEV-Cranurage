@@ -57,6 +57,6 @@ from Spider_soup import sword_master, gunner, bows
 
 
 
-bows("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/yumi.htm", "Bows")
-bows("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/yumi_g.htm#t8", "Bows")
-bows("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/yumi_s.htm#t5", "Bows")
+# bows("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/yumi.htm", "Bows")
+# bows("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/yumi_g.htm#t8", "Bows")
+# bows("https://xl3lackout.github.io/MHFZ-Ferias-English-Project/buki/yumi_s.htm#t5", "Bows")
