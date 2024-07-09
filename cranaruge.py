@@ -10,6 +10,8 @@ import interactions
 import numpy as np
 import math
 import re
+import csv
+import grepofunction
 from discord import Embed
 from discord.ext import commands
 from discord.ext.tasks import loop
@@ -57,7 +59,7 @@ async def self(interation: discord.Interaction):
 
 @tree.command(name="mhfzzinstall", description="Guide d'installation de Monster Hunter Frontier Z Zenith.")
 async def self(interation: discord.Interaction):
-    await interation.response.send_message("Lien de téléchargement des fichiers : https://drive.google.com/file/d/14WJcwhDAlr_8l_eZkarR6oKRHpQdi-Wy/view\n")
+    await interation.response.send_message("Cliquez [ici](https://drive.google.com/drive/folders/1Kqc755YcnirjaHB3uhCugcLvYugArHGS) pour télécharger les fichiers de MHFZZ !\n")
 
 # @tree.command(name="mhfzzweapon", description="Obtenir des informations sur une arme.")
 # async def self(interation: discord.Interaction, type_d_arme: typing.Literal["Grande épée", "Épée longue", "Épée & Bouclier", "Lames doubles", "Marteau", "Lance", "Lancecanon", "Corne de chasse", "Morpho-hache", "Tonfas", "Magnet Spike", "Fusarbalète léger", "Fusarbalète lourd", "Arc"],
@@ -368,6 +370,70 @@ async def self(interation: discord.Interaction, age: typing.Literal["ADB", "ADF"
         "> <:explosif:1087332458460086322> Explosif x300\n> <:piecedetachee:1087332427950719057> Pièce détachée x330\n> <:essence:1087332408627560549> Essence x300\n" +
         "> <:ferblanc:1087332495252521010> Fer blanc x350")
 
+# VARIABLES GLOBALES GREPOLIS
+
+heroList = {
+    "Agamemnon":55,
+    "Ajax":35,
+    "Alexandrios":40,
+    "Andromède":0,
+    "Anysia":120,
+    "Apheledes":70,
+    "Argos":105,
+    "Aristote":105,
+    "Atalante":105,
+    "Chiron":105,
+    "Christopholus":70,
+    "Dédale":70,
+    "Déimos":120,
+    "Démocrite":70,
+    "Eurybie":105,
+    "Ferkyon":70,
+    "Hector":65,
+    "Hélène":105,
+    "Héraclès":85,
+    "Jason":45,
+    "Léonidas":110,
+    "Lysippe":45,
+    "Médée":40,
+    "Mélousa":45,
+    "Mihalis":85,
+    "Orphée":75,
+    "Pariphaistes":70,
+    "Pélops":60,
+    "Persée":105,
+    "Philoctète":60,
+    "Rekonos":65,
+    "Télémaque":40,
+    "Terylea":65,
+    "Thémistocle":60,
+    "Ulysse":115,
+    "Urephon":95,
+    "Ylestres":65,
+    "Zuretha":95
+}
+levelCost = {
+    2:12,
+    3:13,
+    4:16,
+    5:19,
+    6:22,
+    7:27,
+    8:32,
+    9:37,
+    10:44,
+    11:51,
+    12:58,
+    13:67,
+    14:76,
+    15:85,
+    16:96,
+    17:107,
+    18:118,
+    19:131,
+    20:144
+}
+
 # COMMANDES GREPOLIS
 
 @tree.command(name="grepowiki", description="Lance une recherche sur le Wiki français officiel de Grepolis.")
@@ -563,91 +629,94 @@ async def self(interation: discord.Interaction, population_totale: int, nombre_d
     else:
         await interation.response.send_message(f"Une ville ne peut pas avoir {population_totale} habitants !")
 
-@tree.command(name="grepoherocostcalculator", description="Calcule le coût en pièces du héros pour un niveau donné.")
-async def self(interation: discord.Interaction, héros: typing.Literal["Agamemnon", "Ajax", "Alexandrios", "Anysia", "Apheledes", "Argos", "Aristote", "Atalante", "Chiron",
-                                                                      "Christopholus", "Dédale", "Déimos", "Démocrite", "Eurybie", "Ferkyon", "Hector", "Hélène", "Héraclès",
-                                                                      "Jason", "Léonidas", "Lysippe", "Médée", "Mélousa", "Mihalis", "Orphée", "Pariphaistes", "Pélops",
-                                                                      "Persée", "Philoctète", "Rekonos", "Télémaque", "Terylea", "Thémistocle", "Ulysse", "Urephon",
-                                                                      "Ylestres", "Zuretha"], niveau:int):
-    levelCost = {
-        1:12,
-        2:13,
-        3:16,
-        4:19,
-        5:22,
-        6:27,
-        7:32,
-        8:37,
-        9:44,
-        10:51,
-        11:58,
-        12:58,
-        13:67,
-        14:76,
-        15:85,
-        16:96,
-        17:107,
-        18:118,
-        19:131,
-        20:144
-    }
+@tree.command(name="grepoblueherocostcalculator", description="Calcule le coût en pièces bleues du héros pour un niveau donné.")
+async def self(interation: discord.Interaction, héros: typing.Literal["Andromède", "Anysia", "Apheledes", "Argos", "Aristote", "Chiron",
+                                                                      "Christopholus", "Dédale", "Démocrite", "Eurybie", "Ferkyon", "Orphée",
+                                                                      "Pariphaistes", "Philoctète", "Rekonos", "Terylea", "Ulysse", "Ylestres"],
+                                                                      niveau_cible:int, niveau_actuel:typing.Optional[int] = 0):
+    
+    target = niveau_cible
+    current = niveau_actuel
 
-    heroList = {
-        "Agamemnon":55,
-        "Ajax":35,
-        "Alexandrios":40,
-        "Anysia":120,
-        "Apheledes":70,
-        "Argos":105,
-        "Aristote":105,
-        "Atalante":105,
-        "Chiron":105,
-        "Christopholus":70,
-        "Dédale":70,
-        "Déimos":120,
-        "Démocrite":70,
-        "Eurybie":105,
-        "Ferkyon":70,
-        "Hector":65,
-        "Hélène":105,
-        "Héraclès":85,
-        "Jason":45,
-        "Léonidas":110,
-        "Lysippe":45,
-        "Médée":40,
-        "Mélousa":45,
-        "Mihalis":85,
-        "Orphée":75,
-        "Pariphaistes":70,
-        "Pélops":60,
-        "Persée":105,
-        "Philoctète":60,
-        "Rekonos":65,
-        "Télémaque":40,
-        "Terylea":65,
-        "Thémistocle":60,
-        "Ulysse":115,
-        "Urephon":95,
-        "Ylestres":65,
-        "Zuretha":95
-    }
-
-    if niveau > 20:
-        await interation.response.send_message(f"Ah ouais stylé {héros} {niveau}")
+    if niveau_actuel > 20:
+        await interation.response.send_message(f"Ah ouais stylé {héros} {niveau_actuel}")
         return
+    elif niveau_cible > 20:
+        await interation.response.send_message(f"Ah ouais stylé {héros} {niveau_cible}")
+        return
+    elif niveau_cible <= niveau_actuel and niveau_actuel != 0:
+        await interation.response.send_message(f"Le niveau cible ne peut pas être supérieur ou égal au niveau actuel !")
+        return
+    
+    cost = 0
 
-    await interation.response.send_message(f"En cours de construction.")
+    if niveau_actuel == 0:
+        cost += heroList[héros]
+        niveau_actuel += 1
+    
+    niveau_actuel += 1
 
-@tree.command(name="grepotroupecount", description="Compte le total de BB indiqué dans #compte-bb")
+    try:
+        while niveau_actuel <= niveau_cible:
+            print(f"{héros} : {cost}")
+            cost += levelCost[niveau_actuel]
+            niveau_actuel += 1
+    except:
+        print(f"{niveau_cible} n'est pas un niveau valide")
+
+    print(f"Après while : {héros} : {cost}")
+    await interation.response.send_message(f"Pour passer {héros} du niveau {current} à {target}, il faut dépenser un total de {cost} pièces bleues.")
+    
+@tree.command(name="greporedherocostcalculator", description="Calcule le coût en pièces rouges du héros pour un niveau donné.")
+async def self(interation: discord.Interaction, héros: typing.Literal["Agamemnon", "Ajax", "Alexandrios", "Atalante", "Déimos", "Hector", "Hélène",
+                                                                      "Héraclès", "Jason", "Léonidas", "Lysippe", "Médée", "Mélousa", "Mihalis", "Pélops",
+                                                                      "Persée", "Télémaque", "Thémistocle", "Urephon", "Zuretha"],
+                                                                      niveau_cible:int, niveau_actuel:typing.Optional[int] = 0):
+    
+    target = niveau_cible
+    current = niveau_actuel
+
+    if niveau_actuel > 20:
+        await interation.response.send_message(f"Ah ouais stylé {héros} {niveau_actuel}")
+        return
+    elif niveau_cible > 20:
+        await interation.response.send_message(f"Ah ouais stylé {héros} {niveau_cible}")
+        return
+    elif niveau_cible <= niveau_actuel and niveau_actuel != 0:
+        await interation.response.send_message(f"Le niveau cible ne peut pas être supérieur ou égal au niveau actuel !")
+        return
+    
+    cost = 0
+
+    if niveau_actuel == 0:
+        cost += heroList[héros]
+        niveau_actuel += 1
+    
+    niveau_actuel += 1
+
+    try:
+        while niveau_actuel <= niveau_cible:
+            print(f"{héros} : {cost}")
+            cost += levelCost[niveau_actuel]
+            niveau_actuel += 1
+    except:
+        print(f"{niveau_cible} n'est pas un niveau valide")
+
+    await interation.response.send_message(f"Pour passer {héros} du niveau {current} à {target}, il faut dépenser un total de {cost} pièces rouges.")
+
+@tree.command(name="grepotroupecount", description="Compte le total de troupes indiqué dans #compte-troupe")
 async def self(interation: discord.Interaction, troupe: typing.Literal["bb", "bfx"]):
     total = 0
     messages = []
+    usersId = []
     for channel in interation.guild.text_channels:
         if channel.name == f"compte-{troupe}":
             async for message in channel.history(limit=1000):
-                messages.append(message.content)
-                text = message.content
-                print(text)
+                if message.author.id not in usersId:
+                    messages.append(message.content)
+                    usersId.append(message.author.id)
+                    text = message.content
+                    print(text)
             break
     print(f"messages = {messages}")
 
@@ -659,6 +728,102 @@ async def self(interation: discord.Interaction, troupe: typing.Literal["bb", "bf
 
     await interation.response.send_message(f"L'alliance dispose d'un total de {total} {troupe}")
 
+@tree.command(name="grepolympiaexcelfiller", description="Entrez votre score ainsi que les stats de votre athlète")
+async def self(interation: discord.Interaction, stat_1:int, stat_2:int, stat_3:int, épreuve:typing.Literal["1. Chouettes de guerre d'Athènes", "2. Hoplites de Sparte",
+                                                                                                           "3. Pégases de Corinthe", "4. Éclairs d'Olympe"], score:float):
+
+    contest, _ = grepofunction.TranslateContestName(épreuve)
+
+    with open(f"./grepo-{contest}.csv", "a", newline="", encoding="utf-8") as eventfile:
+        
+        eventwriter = csv.writer(eventfile, delimiter=",", quotechar="\"", quoting=csv.QUOTE_MINIMAL)
+        eventwriter.writerow([stat_1] + [stat_2] + [stat_3] + [épreuve] + [score] + [interation.user.name])
+    
+    await interation.response.send_message(f"Ajouté au fichier : {stat_1} / {stat_2} / {stat_3} pour l'épreuve {épreuve}, score : {score}")
+
+@tree.command(name="grepolympiagetcsvfile", description="Renvoie le fichier .csv qui contient tous les scores enregistrés")
+async def self(interation: discord.Interaction, épreuve:typing.Literal["1. Chouettes de guerre d'Athènes", "2. Hoplites de Sparte", "3. Pégases de Corinthe",
+                                                                       "4. Éclairs d'Olympe"]):
+    
+    contest, link = grepofunction.TranslateContestName(épreuve)
+
+    contestFile = discord.File(f"./grepo-{contest}.csv")
+
+    await interation.response.send_message(content=f"Voici le fichier contenant les scores pour \"[{épreuve}]({link})\" :", file=contestFile)
+
+@tree.command(name="grepolympiabestrepartition", description="Renvoie la meilleure répartition en fonction du niveau et de l'épreuve")
+async def self(interation:discord.Interaction, niveau:int, épreuve:typing.Literal["1. Chouettes de guerre d'Athènes", "2. Hoplites de Sparte", "3. Pégases de Corinthe",
+                                                                       "4. Éclairs d'Olympe"]):
+    
+    if niveau > 250:
+        await interation.response.send_message(f"{niveau} n'est pas un niveau valide !")
+        return
+    
+    contest, _ = grepofunction.TranslateContestName(épreuve)
+
+    stat_1 = ""
+    stat_2 = ""
+    stat_3 = ""
+
+    stat_1_value = 0
+    stat_2_value = 0
+    stat_3_value = 0
+
+    median_score = 0
+    min_score = 0
+    max_score = 0
+
+    with open(f"./grepo-{contest}-best.csv", newline="") as besteventfile:
+        besteventreader = csv.reader(besteventfile, delimiter=",")
+        for i, row in enumerate(besteventreader):
+            if i == 0:
+                stat_1 = row[1]
+                stat_2 = row[2]
+                stat_3 = row[3]
+
+            if i != 0 and int(row[0]) == niveau:
+                stat_1_value = row[1]
+                stat_2_value = row[2]
+                stat_3_value = row[3]
+                median_score = row[4]
+                min_score = row[5]
+                max_score = row[6]
+                print(", ".join(row))
+                break
+    
+    await interation.response.send_message(f"Pour un athlète de niveau {niveau} participant à l'épreuve \"{épreuve}\", la répartition optimale est la suivante :\n"
+                                           + f"{stat_1} : {stat_1_value}\n{stat_2} : {stat_2_value}\n{stat_3} : {stat_3_value}\nSon score sera compris entre "
+                                           + f"{min_score} et {max_score}, avec une valeur moyenne de {median_score}")
+
+@tree.command(name="grepodefcalculator", description="Retourne le nombre de CE / Arcs / Hop transportables pour une population donnée.")
+async def self(interation:discord.Interaction, population:int):
+
+    if population > 4636:
+        await interation.response.send_message(f"Une ville ne peut pas avoir {population} habitants disponibles !")
+        return
+    
+    bt_pop = 7
+    bt_capacity = 32
+
+    btr_pop = 5
+    btr_capacity = 16
+
+    bt_result = grepofunction.calculate_max_transportable_units(population, bt_capacity, bt_pop)
+    btr_result = grepofunction.calculate_max_transportable_units(population, btr_capacity, btr_pop)
+
+    print(btr_result)
+
+    bt_count = bt_result["max_ships"]
+    bt_transport = bt_result["transportable_units"]
+    bt_pop_remaining = bt_result["remaining_population"]
+
+    btr_count = btr_result["max_ships"]
+    btr_transport = btr_result["transportable_units"]
+    btr_pop_remaining = btr_result["remaining_population"]
+
+    await interation.response.send_message(f"Pour une population de {population}, une DT équilibrée sera composée de " + 
+                                           f"{math.floor(btr_transport/4)} CE, {math.floor(btr_transport/4)} Archers et {math.floor(btr_transport/2)}" +
+                                           f" transportés par {btr_count} BTR.")
 #----------------------------------------------------------------------------------------------------------------
 
 @bot.event
@@ -681,6 +846,7 @@ async def on_message(message):
         for emoji in message.guild.emojis:
             print(emoji.name)
             print(emoji.id)
+            print(emoji.url)
 
 
 #----------------------------------------------------------------------------------------------------------------
