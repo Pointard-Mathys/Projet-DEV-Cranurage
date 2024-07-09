@@ -494,140 +494,140 @@ async def self(interation: discord.Interaction, terme_recherché: str):
 #         await interation.response.send_message(f"Une ville ne peut pas avoir {population} habitants !")
 
 
-@tree.command(name="grepooffcalculator", description="Retourne le nombre de troupes faisables pour un montant de BFx, de Catas et de population donné.")
-async def self(interation: discord.Interaction, population_totale: int, nombre_de_catapultes: int, nombre_de_bfx: int):
-    start_pop = population_totale
-    if population_totale < 5000:
+# @tree.command(name="grepooffcalculator", description="Retourne le nombre de troupes faisables pour un montant de BFx, de Catas et de population donné.")
+# async def self(interation: discord.Interaction, population_totale: int, nombre_de_catapultes: int, nombre_de_bfx: int):
+#     start_pop = population_totale
+#     if population_totale < 5000:
 
-        pop_cata = nombre_de_catapultes * 15
-        population_totale -= 10 * nombre_de_bfx
-        population_totale -= pop_cata
-        pop_btr = population_totale -5
-        pop_bt = population_totale -7
-        pop_same_island = population_totale
+#         pop_cata = nombre_de_catapultes * 15
+#         population_totale -= 10 * nombre_de_bfx
+#         population_totale -= pop_cata
+#         pop_btr = population_totale -5
+#         pop_bt = population_totale -7
+#         pop_same_island = population_totale
 
-        if population_totale <= 0:
-            await interation.response.send_message("Il y a trop de catapultes ou de BFx par rapport à la population donnée !")
-            return
+#         if population_totale <= 0:
+#             await interation.response.send_message("Il y a trop de catapultes ou de BFx par rapport à la population donnée !")
+#             return
 
-        btr_count = 1
-        bt_count = 1
+#         btr_count = 1
+#         bt_count = 1
 
-        btr_unit_count = 0
-        bt_unit_count = 0
-        unit_count = 0
+#         btr_unit_count = 0
+#         bt_unit_count = 0
+#         unit_count = 0
 
-        btr_capacity = 16
-        bt_capacity = 32
+#         btr_capacity = 16
+#         bt_capacity = 32
 
-        btr_message = ""
-        bt_message = ""
+#         btr_message = ""
+#         bt_message = ""
 
-        btr_count += math.ceil(pop_cata / 16)
-        if btr_count * 5 > population_totale:
-            btr_message += f"Il y a trop de catapultes pour transporter ce montant de population en BTR avec {nombre_de_bfx} BFx."
-        else:
-            btr_capacity += 16 - pop_cata % 16
-            btr_unit_count += pop_cata
-        print("BTR capacity : ", btr_capacity)
-        print("BTR unity count : ", btr_unit_count)
-        print("Première pop BTR  :", pop_btr)
+#         btr_count += math.ceil(pop_cata / 16)
+#         if btr_count * 5 > population_totale:
+#             btr_message += f"Il y a trop de catapultes pour transporter ce montant de population en BTR avec {nombre_de_bfx} BFx."
+#         else:
+#             btr_capacity += 16 - pop_cata % 16
+#             btr_unit_count += pop_cata
+#         print("BTR capacity : ", btr_capacity)
+#         print("BTR unity count : ", btr_unit_count)
+#         print("Première pop BTR  :", pop_btr)
 
-        bt_count += math.ceil(pop_cata / 32)
-        if bt_count * 7 > population_totale:
-            bt_message += f"Il y a trop de catapultes pour transporter ce montant de population en BT avec {nombre_de_bfx} BFx."
-        else:
-            bt_capacity += 32 - pop_cata % 32
-            bt_unit_count += pop_cata
+#         bt_count += math.ceil(pop_cata / 32)
+#         if bt_count * 7 > population_totale:
+#             bt_message += f"Il y a trop de catapultes pour transporter ce montant de population en BT avec {nombre_de_bfx} BFx."
+#         else:
+#             bt_capacity += 32 - pop_cata % 32
+#             bt_unit_count += pop_cata
 
-        while pop_btr > 0:
-            if btr_capacity > 0:
-                pop_btr -= 1
-                btr_capacity -= 1
-                btr_unit_count += 1
-            if btr_capacity == 0 and pop_btr >= 5:
-                pop_btr -= 5
-                btr_count += 1
-                btr_capacity = 16
-            elif btr_capacity == 0:
-                pop_btr = 0
-            if pop_btr <= 5:
-                pop_btr = 0
-            print("Pop BTR :", pop_btr)
-            print("BTR units count :", btr_unit_count)
-            print("BTR count :", btr_count)
-            print("Total pop : ", btr_unit_count + btr_count * 5)
+#         while pop_btr > 0:
+#             if btr_capacity > 0:
+#                 pop_btr -= 1
+#                 btr_capacity -= 1
+#                 btr_unit_count += 1
+#             if btr_capacity == 0 and pop_btr >= 5:
+#                 pop_btr -= 5
+#                 btr_count += 1
+#                 btr_capacity = 16
+#             elif btr_capacity == 0:
+#                 pop_btr = 0
+#             if pop_btr <= 5:
+#                 pop_btr = 0
+#             print("Pop BTR :", pop_btr)
+#             print("BTR units count :", btr_unit_count)
+#             print("BTR count :", btr_count)
+#             print("Total pop : ", btr_unit_count + btr_count * 5)
 
-        while pop_bt > 0:
-            if bt_capacity > 0:
-                pop_bt -= 1
-                bt_capacity -= 1
-                bt_unit_count += 1
-            if bt_capacity == 0 and pop_bt >= 7:
-                pop_bt -= 7
-                bt_count += 1
-                bt_capacity = 32
-            elif bt_capacity == 0:
-                pop_bt = 0
-            if pop_bt <= 7:
-                pop_bt = 0
-            print("Pop BT :", pop_bt)
-            print("BT units count :", bt_unit_count)
+#         while pop_bt > 0:
+#             if bt_capacity > 0:
+#                 pop_bt -= 1
+#                 bt_capacity -= 1
+#                 bt_unit_count += 1
+#             if bt_capacity == 0 and pop_bt >= 7:
+#                 pop_bt -= 7
+#                 bt_count += 1
+#                 bt_capacity = 32
+#             elif bt_capacity == 0:
+#                 pop_bt = 0
+#             if pop_bt <= 7:
+#                 pop_bt = 0
+#             print("Pop BT :", pop_bt)
+#             print("BT units count :", bt_unit_count)
 
-        # while pop_btr > 0:
-        #     pop_btr -= 1
-        #     btr_unit_count += 1
-        #     if pop_btr - 5 < 0:
-        #         pop_btr = 0
-        #     elif btr_unit_count % 16 == 0 and pop_btr - 5 >= 0:
-        #         pop_btr -= 5
-        #         btr_count += 1
-        #         btr_capacity = btr_count * 16
+#         # while pop_btr > 0:
+#         #     pop_btr -= 1
+#         #     btr_unit_count += 1
+#         #     if pop_btr - 5 < 0:
+#         #         pop_btr = 0
+#         #     elif btr_unit_count % 16 == 0 and pop_btr - 5 >= 0:
+#         #         pop_btr -= 5
+#         #         btr_count += 1
+#         #         btr_capacity = btr_count * 16
 
-        # while pop_bt > 0:
-        #     pop_bt -= 1
-        #     bt_unit_count += 1
-        #     if pop_bt - 7 < 0:
-        #         pop_bt = 0
-        #     elif bt_unit_count % 32 == 0 and pop_bt - 7 >= 0:
-        #         pop_bt -= 7
-        #         bt_count += 1
-        #         bt_capacity = bt_count * 32
+#         # while pop_bt > 0:
+#         #     pop_bt -= 1
+#         #     bt_unit_count += 1
+#         #     if pop_bt - 7 < 0:
+#         #         pop_bt = 0
+#         #     elif bt_unit_count % 32 == 0 and pop_bt - 7 >= 0:
+#         #         pop_bt -= 7
+#         #         bt_count += 1
+#         #         bt_capacity = bt_count * 32
 
-        btr_unit_count -= pop_cata
-        bt_unit_count -= pop_cata
-        print("Last BTR unit count :", btr_unit_count)
+#         btr_unit_count -= pop_cata
+#         bt_unit_count -= pop_cata
+#         print("Last BTR unit count :", btr_unit_count)
 
-        while pop_same_island > 0:
-            pop_same_island -= 1
-            unit_count += 1
+#         while pop_same_island > 0:
+#             pop_same_island -= 1
+#             unit_count += 1
 
-        # if btr_capacity < btr_unit_count:
-        #     return
+#         # if btr_capacity < btr_unit_count:
+#         #     return
 
-        # if bt_capacity < bt_unit_count:
-        #     return
+#         # if bt_capacity < bt_unit_count:
+#         #     return
 
-        # if btr_unit_count < 0:
-        #     btr_message += f"Il y a trop de catapultes pour transporter ce montant de population en BTR avec {nombre_de_bfx} BFx."
-        if pop_btr == 0:
-            btr_message = f"- En BTR :\n{btr_unit_count} Fr / Hop ou {math.floor(btr_unit_count / 3)} Cavas, transportés par {btr_count} BTR avec {nombre_de_bfx} BFx."+ \
-            f"\nAvec les Fr / Hop, il restera {start_pop - (btr_unit_count + 5 * btr_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville."+\
-                f"\nAvec les Cavas, il restera {start_pop - (btr_unit_count - btr_unit_count % 3 + 5 * btr_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville."
+#         # if btr_unit_count < 0:
+#         #     btr_message += f"Il y a trop de catapultes pour transporter ce montant de population en BTR avec {nombre_de_bfx} BFx."
+#         if pop_btr == 0:
+#             btr_message = f"- En BTR :\n{btr_unit_count} Fr / Hop ou {math.floor(btr_unit_count / 3)} Cavas, transportés par {btr_count} BTR avec {nombre_de_bfx} BFx."+ \
+#             f"\nAvec les Fr / Hop, il restera {start_pop - (btr_unit_count + 5 * btr_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville."+\
+#                 f"\nAvec les Cavas, il restera {start_pop - (btr_unit_count - btr_unit_count % 3 + 5 * btr_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville."
 
-        # if bt_unit_count < 0:
-        #     bt_message += f"Il y a trop de catapultes pour transporter ce montant de population en BT avec {nombre_de_bfx} BFx."
-        if pop_bt == 0:
-            bt_message = f"- En BT :\n{bt_unit_count} Fr / Hop ou {math.floor(bt_unit_count / 3)} Cavas, transportés par {bt_count} BT avec {nombre_de_bfx} BFx."+ \
-            f"\nAvec les Fr / Hop, il restera {start_pop - (bt_unit_count + 7 * bt_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville." +\
-                f"\nAvec les Cavas, il restera {start_pop - (bt_unit_count - bt_unit_count % 3 + 7 * bt_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville."
+#         # if bt_unit_count < 0:
+#         #     bt_message += f"Il y a trop de catapultes pour transporter ce montant de population en BT avec {nombre_de_bfx} BFx."
+#         if pop_bt == 0:
+#             bt_message = f"- En BT :\n{bt_unit_count} Fr / Hop ou {math.floor(bt_unit_count / 3)} Cavas, transportés par {bt_count} BT avec {nombre_de_bfx} BFx."+ \
+#             f"\nAvec les Fr / Hop, il restera {start_pop - (bt_unit_count + 7 * bt_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville." +\
+#                 f"\nAvec les Cavas, il restera {start_pop - (bt_unit_count - bt_unit_count % 3 + 7 * bt_count + 15 * nombre_de_catapultes + 10 * nombre_de_bfx)} habitants dans la ville."
 
-        await interation.response.send_message(f"Avec {start_pop} habitants, {nombre_de_bfx} BFx et {nombre_de_catapultes} Catas, une OT sera composée de :\n\n"+
-        f"- Sur la même île :\n{unit_count} Fr / Hop ou {math.floor(unit_count / 3)} Cavas (dans ce cas, il restera {unit_count % 3} habitants dans la ville)." +
-        f"\n\n{btr_message}\n\n{bt_message}")
-        return
-    else:
-        await interation.response.send_message(f"Une ville ne peut pas avoir {population_totale} habitants !")
+#         await interation.response.send_message(f"Avec {start_pop} habitants, {nombre_de_bfx} BFx et {nombre_de_catapultes} Catas, une OT sera composée de :\n\n"+
+#         f"- Sur la même île :\n{unit_count} Fr / Hop ou {math.floor(unit_count / 3)} Cavas (dans ce cas, il restera {unit_count % 3} habitants dans la ville)." +
+#         f"\n\n{btr_message}\n\n{bt_message}")
+#         return
+#     else:
+#         await interation.response.send_message(f"Une ville ne peut pas avoir {population_totale} habitants !")
 
 @tree.command(name="grepoblueherocostcalculator", description="Calcule le coût en pièces bleues du héros pour un niveau donné.")
 async def self(interation: discord.Interaction, héros: typing.Literal["Andromède", "Anysia", "Apheledes", "Argos", "Aristote", "Chiron",
@@ -796,7 +796,7 @@ async def self(interation:discord.Interaction, niveau:int, épreuve:typing.Liter
                                            + f"{min_score} et {max_score}, avec une valeur moyenne de {median_score}")
 
 @tree.command(name="grepodefcalculator", description="Retourne le nombre de CE / Arcs / Hop transportables pour une population donnée.")
-async def self(interation:discord.Interaction, population:int):
+async def self(interation:discord.Interaction, population:int, inclure_bt:typing.Optional[bool]=False):
 
     if population > 4636:
         await interation.response.send_message(f"Une ville ne peut pas avoir {population} habitants disponibles !")
@@ -821,9 +821,13 @@ async def self(interation:discord.Interaction, population:int):
     btr_transport = btr_result["transportable_units"]
     btr_pop_remaining = btr_result["remaining_population"]
 
-    await interation.response.send_message(f"Pour une population de {population}, une DT équilibrée sera composée de " + 
-                                           f"{math.floor(btr_transport/4)} CE, {math.floor(btr_transport/4)} Archers et {math.floor(btr_transport/2)}" +
-                                           f" transportés par {btr_count} BTR.")
+    message = f"Pour une population de {population}, une DT équilibrée sera composée de {math.floor(btr_transport/4)} CE, {math.floor(btr_transport/4)} Archers et {math.floor(btr_transport/2)} Hoplites transportés par {btr_count} BTR."
+
+    if inclure_bt:
+        message = message + f"\n\nTransportés en BT, {population} habitants se répartiront en {math.floor(bt_transport/4)} CE, {math.floor(bt_transport/4)} Archers et {math.floor(bt_transport/2)} Hoplites transportés par {bt_count} BT."
+
+    await interation.response.send_message(message)
+
 #----------------------------------------------------------------------------------------------------------------
 
 @bot.event
