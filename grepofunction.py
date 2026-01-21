@@ -8,6 +8,8 @@ def TranslateContestName(name):
             return "corinth", "https://docs.google.com/spreadsheets/d/1cNnKSw9rgMlp4J1s_u_gSAHgAe-asZT9a4Vd1wDmVPA/edit?usp=sharing"
         case "4. Éclairs d'Olympe":
             return "olympia", "https://docs.google.com/spreadsheets/d/1L5BBTMLZSxGLskZhUzjYC7K8thOR451Uk0RY5xsPl4s/edit?usp=sharing"
+        case "5. Luge sur bouclier":
+            return "luge",""
         case _:
             return "Name not valid"
         

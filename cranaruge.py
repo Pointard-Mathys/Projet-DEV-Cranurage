@@ -50,6 +50,16 @@ tree = app_commands.CommandTree(bot)
 @tree.command(name="pang", description="Yes, Cranaruge is here.")
 async def self(interation: discord.Interaction):
     await interation.response.send_message("Poogie pongs you.")
+    return
+
+@tree.command(name="testquote", description="This is a description")
+async def self(interation: discord.Interaction):
+    await interation.response.send_message("<:deletethis:1065739908599255231>")
+
+@tree.command(name="theultimatefurrytransfemboyegirl", description="Zapatalo, le zoo à loups de Zootaloo.")
+async def self(interation: discord.Interaction):
+    await interation.response.send_message("<@257075444971470859> get pinged.")
+    return
 
 # COMMANDES MOGAPÉDIA
 
@@ -753,7 +763,7 @@ async def self(interation: discord.Interaction, épreuve:typing.Literal["1. Chou
 
 @tree.command(name="grepolympiabestrepartition", description="Renvoie la meilleure répartition en fonction du niveau et de l'épreuve")
 async def self(interation:discord.Interaction, niveau:int, épreuve:typing.Literal["1. Chouettes de guerre d'Athènes", "2. Hoplites de Sparte", "3. Pégases de Corinthe",
-                                                                       "4. Éclairs d'Olympe"]):
+                                                                       "4. Éclairs d'Olympe", "5. Luge sur bouclier"]):
     
     if niveau > 250:
         await interation.response.send_message(f"{niveau} n'est pas un niveau valide !")
@@ -832,8 +842,9 @@ async def self(interation:discord.Interaction, population:int, inclure_bt:typing
 
 @bot.event
 async def on_message(message):
+    user_name = message.author
     user_message = message.content
-    print(user_message)
+    print(user_name, "a écrit :", user_message)
 
     if  "poogie" in user_message.lower():
         hasPoogie = False
@@ -846,7 +857,7 @@ async def on_message(message):
         if hasPoogie == False:
             await message.add_reaction("<:poogie:964488145041256508>")
 
-    if "gimme emoji" in user_message.lower():
+    if "poogie" in user_message.lower():
         for emoji in message.guild.emojis:
             print(emoji.name)
             print(emoji.id)
