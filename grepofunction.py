@@ -10,6 +10,8 @@ def TranslateContestName(name):
             return "olympia", "https://docs.google.com/spreadsheets/d/1L5BBTMLZSxGLskZhUzjYC7K8thOR451Uk0RY5xsPl4s/edit?usp=sharing"
         case "5. Luge sur bouclier":
             return "luge",""
+        case "6. Biathlon":
+            return "biathlon",""
         case _:
             return "Name not valid"
         

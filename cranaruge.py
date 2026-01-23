@@ -763,7 +763,7 @@ async def self(interation: discord.Interaction, épreuve:typing.Literal["1. Chou
 
 @tree.command(name="grepolympiabestrepartition", description="Renvoie la meilleure répartition en fonction du niveau et de l'épreuve")
 async def self(interation:discord.Interaction, niveau:int, épreuve:typing.Literal["1. Chouettes de guerre d'Athènes", "2. Hoplites de Sparte", "3. Pégases de Corinthe",
-                                                                       "4. Éclairs d'Olympe", "5. Luge sur bouclier"]):
+                                                                       "4. Éclairs d'Olympe", "5. Luge sur bouclier", "6. Biathlon"]):
     
     if niveau > 250:
         await interation.response.send_message(f"{niveau} n'est pas un niveau valide !")
