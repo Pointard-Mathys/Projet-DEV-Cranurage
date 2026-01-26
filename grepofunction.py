@@ -12,6 +12,8 @@ def TranslateContestName(name):
             return "luge",""
         case "6. Biathlon":
             return "biathlon",""
+        case "7. Patinage":
+            return "skating",""
         case _:
             return "Name not valid"
         
